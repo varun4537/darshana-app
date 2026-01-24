@@ -1,0 +1,90 @@
+{
+    "name": "Darshana Design System",
+    "version": "2.0",
+    "mode": "dark",
+    "colors": {
+        "primary": {
+            "ruby": {
+                "hex": "#852E47",
+                "rgb": [
+                    133,
+                    46,
+                    71
+                ],
+                "usage": "Primary accent, CTAs, important elements"
+            },
+            "indigo": {
+                "hex": "#0D244D",
+                "rgb": [
+                    13,
+                    36,
+                    77
+                ],
+                "usage": "Base background, deep containers"
+            }
+        },
+        "secondary": {
+            "moss": {
+                "hex": "#4A5A30",
+                "rgb": [
+                    74,
+                    90,
+                    48
+                ],
+                "usage": "Secondary accent, success states, nature elements"
+            },
+            "nectar": {
+                "hex": "#C2441C",
+                "rgb": [
+                    194,
+                    68,
+                    28
+                ],
+                "usage": "Warm accent, highlights, warnings"
+            }
+        },
+        "semantic": {
+            "background": {
+                "base": "#0A1628",
+                "elevated": "#0D244D",
+                "surface": "#142850"
+            },
+            "foreground": {
+                "primary": "#F5F0E8",
+                "secondary": "#B8B0A0",
+                "muted": "#6B6B6B"
+            },
+            "border": {
+                "default": "rgba(133, 46, 71, 0.3)",
+                "subtle": "rgba(245, 240, 232, 0.1)"
+            }
+        }
+    },
+    "typography": {
+        "fontFamily": {
+            "sans": "Inter, system-ui, sans-serif",
+            "serif": "Libre Baskerville, Georgia, serif",
+            "devanagari": "Noto Serif Devanagari, serif"
+        },
+        "scale": {
+            "xs": "0.75rem",
+            "sm": "0.875rem",
+            "base": "1rem",
+            "lg": "1.125rem",
+            "xl": "1.25rem",
+            "2xl": "1.5rem",
+            "3xl": "1.875rem",
+            "4xl": "2.25rem",
+            "5xl": "3rem"
+        }
+    },
+    "shadows": {
+        "soft": "0 4px 20px -2px rgba(13, 36, 77, 0.5)",
+        "glow": "0 0 15px rgba(133, 46, 71, 0.4)",
+        "card": "0 8px 32px rgba(0, 0, 0, 0.3)"
+    },
+    "ai": {
+        "model": "gemini-2.5-flash-preview-05-20",
+        "systemPrompt": "You are Darshana, a scholarly assistant specializing in Hindu philosophy. You MUST ONLY answer questions using information from these authenticated primary sources: Bhagavad Gita, Principal Upanishads (Isha, Kena, Katha, Prashna, Mundaka, Mandukya, Taittiriya, Aitareya, Chandogya, Brihadaranyaka), Brahma Sutras, Yoga Sutras of Patanjali, and Vivekachudamani. Always cite your sources with specific verse numbers. If a question cannot be answered from these sources, say so clearly. Respond in a warm, scholarly tone befitting a traditional teacher."
+    }
+}
