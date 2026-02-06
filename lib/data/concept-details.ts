@@ -606,5 +606,417 @@ export const conceptDetails: Record<string, ConceptDetail> = {
             { id: "hiriyanna-253", text: "Outlines of Indian Philosophy", reference: "p. 253", sanskrit: "", translation: "Inference is the knowledge which follows after some other knowledge." }
         ],
         contemplation: { prompt: "The Logic of the Self", guidance: "If 'I think,' there must be a 'Thinker.' If there is 'experience,' there must be an 'Experiencer.' Step back from the thoughts and experience, and logically locate the Witness who precedes them all.", durationMinutes: 5 }
+    },
+    pratyaksha: {
+        id: "pratyaksha",
+        title: "Pratyaksha",
+        sanskritTitle: "प्रत्यक्ष",
+        synthesis: `
+            <p class="mb-4"><strong>Pratyaksha</strong> (Perception) is the primary means of knowledge in Nyaya. It is defined as cognition that arises from the contact (Sannikarsha) between sense organs and their objects.</p>
+            <p class="mb-4">It is of two types: <em>Laukika</em> (ordinary) and <em>Alaukika</em> (extraordinary). It is the only Pramana accepted by all Indian schools (except the skeptics).</p>
+            <p>For perception to be valid, it must be determinate (Savikalpaka), non-erroneous, and not arising from mere memory.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-4", text: "Nyaya Sutras", reference: "1.1.4", sanskrit: "इन्द्रियार्थसन्निकर्षोत्पन्नं ज्ञानमव्यपदेश्यमव्यभिचारि व्यवसायात्मकं प्रत्यक्षम्", translation: "Perception is knowledge resulting from sense-object contact, which is not due to words, is invariable, and is determinate." }
+        ],
+        contemplation: { prompt: "Direct Seeing", guidance: "Look at an object. Drop the name 'flower' or 'lamp.' Just be with the raw sensation of color and form. This contact between eye and light, before thought interferes, is pure Pratyaksha.", durationMinutes: 5 }
+    },
+
+    upamana: {
+        id: "upamana",
+        title: "Upamana",
+        sanskritTitle: "उपमान",
+        synthesis: `
+            <p class="mb-4"><strong>Upamana</strong> (Comparison) is knowledge derived from similarity. It is the process of naming an unknown object based on its resemblance to a known object.</p>
+            <p class="mb-4">The classic example is a city dweller who knows a cow, being told that a wild ox (Gavaya) is like a cow. When he sees the animal in the forest, he recognizes it through this description.</p>
+            <p>It bridges the gap between language/description and actual experience.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-6", text: "Nyaya Sutras", reference: "1.1.6", sanskrit: "प्रसिद्धसाधर्म्यात् साध्यसाधनमुपमानम्", translation: "Upamana is the knowledge of the relation between a name and the object denoted by it, acquired through similarity to a known object." }
+        ],
+        contemplation: { prompt: "Learning by Analogy", guidance: "Reflect on how you learn new things. 'It tastes like chicken,' 'It looks like the moon.' See how your mind uses the known to grasp the unknown. This is the bridge of Upamana.", durationMinutes: 5 }
+    },
+
+    shabda: {
+        id: "shabda",
+        title: "Shabda",
+        sanskritTitle: "शब्द",
+        synthesis: `
+            <p class="mb-4"><strong>Shabda</strong> (Verbal Testimony) is the instruction of a reliable person (Apta). Since we cannot verify everything personally, we rely on the word of those who know.</p>
+            <p class="mb-4">In the context of philosophy, Shabda refers specifically to the Vedas (Shruti) as the ultimate valid testimony regarding super-sensuous truths (like Dharma or Brahman).</p>
+            <p>Valid testimony requires capability (Yogyata), expectancy (Akanksha), and proximity (Sannidhi) of words to convey meaning.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-7", text: "Nyaya Sutras", reference: "1.1.7", sanskrit: "आप्तोपदेशः शब्दः", translation: "Shabda is the assertion of a reliable person (Apta)." },
+            { id: "mimamsa-sutra", text: "Mimamsa Sutras", reference: "1.1.5", sanskrit: "औत्पत्तिकस्तु शब्दस्यार्थेन सम्बन्धः", translation: "The relationship between a word and its meaning is eternal." }
+        ],
+        contemplation: { prompt: "Trust in Wisdom", guidance: "Think of a teacher or text you deeply trust. Why do you trust them? Because their words have proven true in your experience. True Shabda calls for verification, not blind faith.", durationMinutes: 5 }
+    },
+
+    "nyaya-syllogism": {
+        id: "nyaya-syllogism",
+        title: "Nyaya Syllogism",
+        sanskritTitle: "अवयव",
+        synthesis: `
+            <p class="mb-4">The <strong>Nyaya Syllogism</strong> is a five-step process of inference used to prove a point to others (Pararthanumana).</p>
+            <p class="mb-4">The steps are: 1. Pratijna (Statement: 'The mountain has fire'), 2. Hetu (Reason: 'Because of smoke'), 3. Udaharana (Example: 'Like a kitchen'), 4. Upanaya (Application: 'So is this mountain'), 5. Nigamana (Conclusion: 'Therefore it has fire').</p>
+            <p>This structure grounds logic in reality by requiring a concrete example, unlike abstract Western syllogisms.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-32", text: "Nyaya Sutras", reference: "1.1.32", sanskrit: "प्रतिज्ञाहेतूदाहरणोपनयनिगमनाून्यवयवाः", translation: "The members of the syllogism are Proposition, Reason, Example, Application, and Conclusion." }
+        ],
+        contemplation: { prompt: "Constructing Truth", guidance: "Pick a belief you hold. Can you prove it? Try the five steps. State it. Give the reason. Give an example everyone accepts. Apply it. Conclude. If you can't, is it knowledge or assumption?", durationMinutes: 7 }
+    },
+
+    // ==================== VAISHESHIKA MISSING ====================
+    dravya: {
+        id: "dravya",
+        title: "Dravya",
+        sanskritTitle: "द्रव्य",
+        synthesis: `
+            <p class="mb-4"><strong>Dravya</strong> (Substance) is the substratum where qualities (Guna) and actions (Karma) reside. It is the fundamental 'stuff' of reality.</p>
+            <p class="mb-4">Vaisheshika lists nine substances: Earth, Water, Fire, Air, Ether (Akasha), Time (Kala), Space (Dik), Self (Atman), and Mind (Manas).</p>
+            <p>The first four are material and atomic; the rest are eternal and all-pervading (except Mind, which is atomic).</p>
+        `,
+        sources: [
+            { id: "vaisheshika-1-1-15", text: "Vaisheshika Sutras", reference: "1.1.15", sanskrit: "क्रियागुणवत् समवायिकारणमिति द्रव्यलक्षणम्", translation: "The definition of Substance is that it possesses action and qualities and is a constitutive cause." },
+            { id: "vaisheshika-1-1-5", text: "Vaisheshika Sutras", reference: "1.1.5", sanskrit: "पृथिव्यापस्तेजो वायुराकाशं कालो दिगात्मा मन इति द्रव्याणि", translation: "Earth, Water, Fire, Air, Ether, Time, Space, Self, and Mind are the substances." }
+        ],
+        contemplation: { prompt: "The Nine Foundations", guidance: "Feel the solidity of earth in your bones, water in your blood, fire in your digestion, air in your breath, space around you. You are woven from the nine Dravyas.", durationMinutes: 5 }
+    },
+
+    "guna-vaisheshika": {
+        id: "guna-vaisheshika",
+        title: "Guna",
+        sanskritTitle: "गुण",
+        synthesis: `
+            <p class="mb-4"><strong>Guna</strong> refers to the qualities or attributes that reside in a substance. A quality cannot exist by itself; it needs a substance to exist in.</p>
+            <p class="mb-4">Kanada lists 17 qualities (later expanded to 24), including color, taste, smell, touch, number, size, distinctness, conjunction, disjunction, intellect, pleasure, pain, desire, aversion, and effort.</p>
+            <p>Unlike Samkhya's Gunas (which are constituents of matter), Vaisheshika Gunas are static attributes.</p>
+        `,
+        sources: [
+            { id: "vaisheshika-1-1-16", text: "Vaisheshika Sutras", reference: "1.1.16", sanskrit: "द्रव्याश्रय्यगुणवान् संयोगविभागेष्वकारणमनपेक्ष इति गुणलक्षणम्", translation: "A Quality abides in substance, has no quality itself, and is not a cause of conjunction or disjunction." }
+        ],
+        contemplation: { prompt: "Substance and Quality", guidance: "Look at a red apple. Can you separate the 'redness' from the apple? The redness (Guna) adheres to the apple (Dravya). See the world as substances painted with qualities.", durationMinutes: 5 }
+    },
+
+    "karma-vaisheshika": {
+        id: "karma-vaisheshika",
+        title: "Karma",
+        sanskritTitle: "कर्म",
+        synthesis: `
+            <p class="mb-4">In Vaisheshika, <strong>Karma</strong> specifically means physical motion or action, distinct from result of merit/demerit.</p>
+            <p class="mb-4">There are five types of motion: throwing upward (Utkshepana), throwing downward (Avakshepana), contraction (Akunchana), expansion (Prasarana), and locomotion (Gamana).</p>
+            <p>All action subsists in finite substances (like earth, water, light, air, mind) and is the cause of conjunction and disjunction.</p>
+        `,
+        sources: [
+            { id: "vaisheshika-1-1-7", text: "Vaisheshika Sutras", reference: "1.1.7", sanskrit: "उत्क्षेपनमपक्षेपनमाकुञ्चनं प्रसारणं गमनमिति कर्माणि", translation: "Throwing upwards, throwing downwards, contraction, expansion, and motion are the actions." }
+        ],
+        contemplation: { prompt: "The Dance of Motion", guidance: "Move your arm. That is Gamana. Makes a fist. That is Akunchana. Open it. Prasarana. Observe all physical life as these five movements acting on substance.", durationMinutes: 5 }
+    },
+
+    paramanu: {
+        id: "paramanu",
+        title: "Paramanu",
+        sanskritTitle: "परमाणु",
+        synthesis: `
+            <p class="mb-4"><strong>Paramanu</strong> (Atom) is the smallest indivisible particle of matter. It is eternal, spherical, and supersensible.</p>
+            <p class="mb-4">Vaisheshika is unique for its atomism. The four elements (earth, water, fire, air) are formed by the combination of atoms. Two atoms form a Dyad (Dvyanuka), and three Dyads form a Triad (Tryanuka), which implies the size of a mote in a sunbeam.</p>
+            <p>Consciousness is not a property of atoms but of the Atman.</p>
+        `,
+        sources: [
+            { id: "vaisheshika-4-1-1", text: "Vaisheshika Sutras", reference: "4.1.1", sanskrit: "सदकारणवन्नित्यम्", translation: "That which is existent and has no cause is eternal (referring to atoms)." },
+            { id: "nyaya-vartika", text: "Nyaya Vartika", reference: "4.2.1", sanskrit: "", translation: "The atom is that which cannot be divided further." }
+        ],
+        contemplation: { prompt: "Atomic Reality", guidance: "Visualise the solid world dissolving into vibrations of tiny points. Eternal, invisible dust building the visible universe. You are looking at the building blocks of God's creation.", durationMinutes: 7 }
+    },
+
+    samavaya: {
+        id: "samavaya",
+        title: "Samavaya",
+        sanskritTitle: "समवाय",
+        synthesis: `
+            <p class="mb-4"><strong>Samavaya</strong> (Inherence) is the inseparable, eternal relationship between a whole and its parts, a quality and its substance, or an action and its agent.</p>
+            <p class="mb-4">Unlike simple contact (Samyoga), which is temporary (like a book on a table), Samavaya is permanent (like the color of a cloth in the cloth). You cannot pull the color out of the cloth.</p>
+            <p>This category explains how distinct entities form a unified whole.</p>
+        `,
+        sources: [
+            { id: "vaisheshika-7-2-26", text: "Vaisheshika Sutras", reference: "7.2.26", sanskrit: "इहेदमिति यतः कार्यकारणयोः स समवायः", translation: "That relationship by which we see 'this is in that' between cause and effect (e.g., threads and cloth) is Inherence." }
+        ],
+        contemplation: { prompt: "Inseparable Unity", guidance: "Consider your body and your limbs. They are not just stuck together; they inhere. Consider the fire and its heat. Can you have fire without heat? Meditate on this binding force of Inherence.", durationMinutes: 5 }
+    },
+
+    // ==================== SAMKHYA MISSING ====================
+    triguna: {
+        id: "triguna",
+        title: "Triguna",
+        sanskritTitle: "त्रिगुण",
+        synthesis: `
+            <p class="mb-4"><strong>Triguna</strong> refers to the three constitutive qualities of Prakriti: Sattva, Rajas, and Tamas. They are like three strands of a rope that bind the soul.</p>
+            <p class="mb-4">Everything in the manifest world is a combination of these three. Evolution begins when their equilibrium is disturbed.</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-13", text: "Samkhya Karika", reference: "13", sanskrit: "सत्त्वं लघु प्रकाशकमिष्टं उपष्टम्भकं चलं च रजः", translation: "Sattva is light and illuminating; Rajas is inciting and mobile; Tamas is heavy and enveloping." }
+        ],
+        contemplation: { prompt: "Balance the Gunas", guidance: "Notice the interplay. When you feel heavy (Tamas), use activity (Rajas) to move. When you are agitated (Rajas), use breath (Sattva) to calm. You are the Alchemist of your own nature.", durationMinutes: 5 }
+    },
+
+    mahat: {
+        id: "mahat",
+        title: "Mahat",
+        sanskritTitle: "महत्",
+        synthesis: `
+            <p class="mb-4"><strong>Mahat</strong> (The Great One) or Buddhi is the first evolute of Prakriti. It is cosmic intelligence and the faculty of discrimination in the individual.</p>
+            <p class="mb-4">It stands closest to Purusha and reflects its light most purely. It is the decision-maker.</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-23", text: "Samkhya Karika", reference: "23", sanskrit: "अध्यवसायो बुद्धिः", translation: "Buddhi is ascertainment or determination." }
+        ],
+        contemplation: { prompt: "The Inner Lamp", guidance: "Before a thought becomes language, it is a flash of understanding. That knowing capability is Buddhi. Watch it light up concepts. It is the lamp at the door of the Self.", durationMinutes: 5 }
+    },
+
+    ahamkara: {
+        id: "ahamkara",
+        title: "Ahamkara",
+        sanskritTitle: "अहंकार",
+        synthesis: `
+            <p class="mb-4"><strong>Ahamkara</strong> is the 'I-maker'—the principle of individuation that arrogates experience to itself. It says 'I see,' 'I feel,' 'I do.'</p>
+            <p class="mb-4">It evolves from Mahat and gives rise to the mind, senses, and subtle elements. It is the center of the subjective universe.</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-24", text: "Samkhya Karika", reference: "24", sanskrit: "अभिमानोऽहंकारः", translation: "Self-assertion is Ahamkara. From it proceeds a two-fold creation." }
+        ],
+        contemplation: { prompt: "Who is the I?", guidance: "Say 'I'. Feel where that vibration comes from. Is it a solid entity or a process of self-referencing? Notice that the 'I' is observed. Who is the observer?", durationMinutes: 5 }
+    },
+
+    "manas-samkhya": {
+        id: "manas-samkhya",
+        title: "Manas",
+        sanskritTitle: "मनस्",
+        synthesis: `
+            <p class="mb-4"><strong>Manas</strong> (Mind) is the coordinating organ. It receives impressions from the senses and presents them to the Ego/Intellect.</p>
+            <p class="mb-4">In Samkhya, it is considered an organ of both knowledge and action (dual nature). It is the faculty of deliberation (Sankalpa).</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-27", text: "Samkhya Karika", reference: "27", sanskrit: "उभयात्मकमत्र मनः", translation: "Here the mind is of the nature of both (sensory and motor)." }
+        ],
+        contemplation: { prompt: "The Gatekeeper", guidance: "Observe how raw data turns into perception. Light hits eye -> Mind processes -> 'I see'. Watch the mind negotiating between the outer world and inner witness.", durationMinutes: 5 }
+    },
+
+    // ==================== YOGA MISSING ====================
+    ishvara: {
+        id: "ishvara",
+        title: "Ishvara",
+        sanskritTitle: "ईश्वर",
+        synthesis: `
+            <p class="mb-4"><strong>Ishvara</strong> in Yoga is valid not as a creator God, but as a special Purusha (Purusha-Vishesha) who has never been touched by ignorance or karma.</p>
+            <p class="mb-4">He is the teacher of the ancients and the object of devotion (Bhakti). Surrender to Ishvara (Ishvara Pranidhana) is a quick path to Samadhi.</p>
+        `,
+        sources: [
+            { id: "yoga-1-24", text: "Yoga Sutras", reference: "1.24", sanskrit: "क्लेशकर्मविपाकाशयैरपरामृष्टः पुरुषविशेष ईश्वरः", translation: "Ishvara is a distinct Purusha untouched by afflictions, actions, fruits, or impressions." },
+            { id: "yoga-1-26", text: "Yoga Sutras", reference: "1.26", sanskrit: "स पूर्वेषामपि गुरुः कालेनानवच्छेदात्", translation: "He is the teacher even of the ancients, being not limited by time." }
+        ],
+        contemplation: { prompt: "The Eternal Teacher", guidance: "Connect to the intelligence that guides the universe. A perfection that was never bound. Visualize this perfect Light and surrender your small ego to it.", durationMinutes: 7 }
+    },
+
+    "abhyasa-vairagya": {
+        id: "abhyasa-vairagya",
+        title: "Abhyasa & Vairagya",
+        sanskritTitle: "अभ्यास वैराग्य",
+        synthesis: `
+            <p class="mb-4"><strong>Abhyasa</strong> (Practice) and <strong>Vairagya</strong> (Dispassion) are the two wings of Yoga. One cannot fly with only one.</p>
+            <p class="mb-4">Abhyasa is the effort to steady the mind. Vairagya is the release of thirst for the seen and unseen. Together they restrain the Chitta Vrittis.</p>
+        `,
+        sources: [
+            { id: "yoga-1-12", text: "Yoga Sutras", reference: "1.12", sanskrit: "अभ्यासवैराग्याभ्यां तन्निरोधः", translation: "The restraint of mental modifications comes from practice and dispassion." },
+            { id: "yoga-1-13", text: "Yoga Sutras", reference: "1.13", sanskrit: "तत्र स्थितौ यत्नोऽभ्यासः", translation: "Practice is the effort to secure steadiness." }
+        ],
+        contemplation: { prompt: "Effort and Let-Go", guidance: "In your next breath: Inhale with intention (Abhyasa). Exhale with complete release (Vairagya). Feel the balance of doing and non-doing.", durationMinutes: 5 }
+    },
+
+    samyama: {
+        id: "samyama",
+        title: "Samyama",
+        sanskritTitle: "संयम",
+        synthesis: `
+            <p class="mb-4"><strong>Samyama</strong> is the technical term for the simultaneous practice of the last three limbs: Dharana, Dhyana, and Samadhi.</p>
+            <p class="mb-4">When these three are focused on the same object, it is Samyama. It is the tool of the Yogi to penetrate the subtle nature of things and gain mastery (Siddhi).</p>
+        `,
+        sources: [
+            { id: "yoga-3-4", text: "Yoga Sutras", reference: "3.4", sanskrit: "त्रयमेकत्र संयमः", translation: "The three together on the same object is Samyama." }
+        ],
+        contemplation: { prompt: "The Laser of Attention", guidance: "Focus on a single concept, like 'Compassion.' Hold it (Dharana), flow into it (Dhyana), lose yourself in it (Samadhi). This triple-action dissolves the barrier between knower and known.", durationMinutes: 10 }
+    },
+
+    // ==================== MIMAMSA MISSING ====================
+    vidhi: {
+        id: "vidhi",
+        title: "Vidhi",
+        sanskritTitle: "विधि",
+        synthesis: `
+            <p class="mb-4"><strong>Vidhi</strong> (Injunction) is the most important part of the Veda for Mimamsa. It is a command that impels one to action, e.g., "One desirous of heaven should sacrifice."</p>
+            <p class="mb-4">Vidhi is what gives the Veda its authority. All other parts (hymns, explanations) are secondary to these actionable commands.</p>
+        `,
+        sources: [
+            { id: "mimamsa-sutra-1", text: "Mimamsa Sutras", reference: "1.1.2", sanskrit: "चोदनालक्षणोऽर्थो धर्मः", translation: "Dharma is that which is indicated by injunctions." }
+        ],
+        contemplation: { prompt: "The Power of Command", guidance: "Feel the difference between a description ('It is good to wake up early') and a command ('Wake up!'). Vidhi carries the power of 'Ought'. Where do you feel the 'Ought' in your life?", durationMinutes: 5 }
+    },
+
+    apurva: {
+        id: "apurva",
+        title: "Apurva",
+        sanskritTitle: "अपूर्व",
+        synthesis: `
+            <p class="mb-4"><strong>Apurva</strong> (Unseen Potency) is the link between a ritual act and its distant result (like heaven). Since the act ends quickly, how can it cause a result years later?</p>
+            <p class="mb-4">The act generates a subtle, invisible potency (Apurva) in the soul, which matures into fruit at the appropriate time.</p>
+        `,
+        sources: [
+            { id: "shabara-bhashya", text: "Shabara Bhashya", reference: "2.1.5", sanskrit: "कर्मणः फलं जायते", translation: "From the action arises the fruit via Apurva." }
+        ],
+        contemplation: { prompt: "Invisible Seeds", guidance: "Every action you do leaves a trace. You can't see it, but it's there, waiting to sprout. Visualize your actions as seeds planted in the soil of time.", durationMinutes: 5 }
+    },
+
+    "shabda-pramana": {
+        id: "shabda-pramana",
+        title: "Shabda Pramana",
+        sanskritTitle: "शब्द प्रमाण",
+        synthesis: `
+            <p class="mb-4">For Mimamsa, <strong>Shabda</strong> (The Vedic Word) is the only means to know Dharma. Perception and inference cannot reveal moral or spiritual duty.</p>
+            <p class="mb-4">The relation between the Word and its meaning is eternal, not created by convention. The Veda is authorless and infallible.</p>
+        `,
+        sources: [
+            { id: "mimamsa-sutra-authorless", text: "Mimamsa Sutras", reference: "1.1.5", sanskrit: "औत्पत्तिकस्तु शब्दस्यार्थेन सम्बन्धः", translation: "The relation of word and meaning is inborn (eternal)." }
+        ],
+        contemplation: { prompt: "Eternal Sound", guidance: "Generic words point to objects. Sacred words point to Truth. Chant OM or a simple word. Feel it not as a human invention, but as a vibration existing before you spoke it.", durationMinutes: 5 }
+    },
+
+    "veda-apaurusheya": {
+        id: "veda-apaurusheya",
+        title: "Apaurusheya",
+        sanskritTitle: "अपौरुषेय",
+        synthesis: `
+            <p class="mb-4"><strong>Apaurusheya</strong> means "not of human origin." Mimamsa argues the Vedas were not written by humans or even God, but are eternal.</p>
+            <p class="mb-4">They are "seen" by Rishis at the beginning of each cycle, but not composed. This guarantees their freedom from defects like bias, error, or deceit.</p>
+        `,
+        sources: [
+            { id: "mimamsa-shloka", text: "Shloka Vartika", reference: "1.1", sanskrit: "सदा नित्याः शब्दाः", translation: "The words of the Veda are always eternal." }
+        ],
+        contemplation: { prompt: "Beyond Authorship", guidance: "Imagine a truth that no one invented. Gravity wasn't 'written'; it was found. Does spiritual truth feel like an opinion, or a discovery of what Is?", durationMinutes: 5 }
+    },
+
+    // ==================== VISHISHTADVAITA MISSING ====================
+    narayana: {
+        id: "narayana",
+        title: "Narayana",
+        sanskritTitle: "नारायण",
+        synthesis: `
+            <p class="mb-4"><strong>Narayana</strong> is the personal name of Brahman in Vishishtadvaita. He is the support (Ayana) of all beings (Nara).</p>
+            <p class="mb-4">He is not formless void, but the ocean of infinite auspicious qualities (Kalyana Gunas) like compassion, strength, and love. He is the goal of all devotion.</p>
+        `,
+        sources: [
+            { id: "narayana-sukta", text: "Narayana Sukta", reference: "1", sanskrit: "सहस्रशीर्षं देवं... नारायणम्", translation: "The Lord Narayana, with a thousand heads, is the Supreme Imperishable." }
+        ],
+        contemplation: { prompt: "The Divine Person", guidance: "Visualize the synthesis of Infinity and Personality. A God who is everywhere yet can be loved as a person. Speak to Him as the Soul of the Universe.", durationMinutes: 7 }
+    },
+
+    "sharira-shariri": {
+        id: "sharira-shariri",
+        title: "Sharira-Shariri",
+        sanskritTitle: "शरीर-शरीरी",
+        synthesis: `
+            <p class="mb-4">The core metaphor of Vishishtadvaita: The world and souls are the Body (Sharira), and God is the Soul (Shariri).</p>
+            <p class="mb-4">Just as your body is distinct from you but inseparable and controlled by you, the universe is distinct from Brahman but inseparable from Him. This is "Qualified Non-Dualism."</p>
+        `,
+        sources: [
+            { id: "sri-bhashya-body", text: "Sri Bhashya", reference: "2.1.9", sanskrit: "यस्य चेतनस्य यद्द्रव्यं सर्वात्मना स्वार्थे नियन्तुं धारयितुं च शक्यम्, तच्छेषतैकस्वरूपं च, तत् तस्य शरीरम्", translation: "Whatever substance a sentient soul can completely control and support for its own purposes is its body." }
+        ],
+        contemplation: { prompt: "God's Body", guidance: "Look at the mountains, the stars, the people. See them as the physical form of the Divine. You are a cell in the cosmic body of God.", durationMinutes: 5 }
+    },
+
+    prapatti: {
+        id: "prapatti",
+        title: "Prapatti",
+        sanskritTitle: "प्रपत्ति",
+        synthesis: `
+            <p class="mb-4"><strong>Prapatti</strong> (Surrender) is the path for those who cannot perform rigorous Yoga or Bhakti. It is the simple act of taking refuge in Narayana.</p>
+            <p class="mb-4">It requires six components, chiefly: absolute faith that "He will protect me" and the feeling of helplessness (I cannot save myself).</p>
+        `,
+        sources: [
+            { id: "charama-shloka", text: "Bhagavad Gita", reference: "18.66", sanskrit: "सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज", translation: "Abandoning all dharmas, take refuge in Me alone. I will liberate you from all sins." }
+        ],
+        contemplation: { prompt: "Total Surrender", guidance: "Let go of the burden of saving yourself. Hand over your worries, your karma, your future to the Higher Power. 'I am Yours. You take care of it.'", durationMinutes: 5 }
+    },
+
+    "antaryamin": {
+        id: "antaryamin",
+        title: "Antaryamin",
+        sanskritTitle: "अन्तर्यामिन्",
+        synthesis: `
+            <p class="mb-4"><strong>Antaryamin</strong> is the Inner Controller. God does not just rule from heaven; He sits in the lotus of the heart of every being as the witness and guide.</p>
+            <p class="mb-4">He is the 'Thread-Self' (Sutratman) running through all pearls of existence. He directs the soul according to its karma.</p>
+        `,
+        sources: [
+            { id: "brihad-3-7-15", text: "Brihadaranyaka Upanishad", reference: "3.7.15", sanskrit: "यः सर्वेषु भूतेषु तिष्ठन्... एष त आत्माऽन्तर्याम्यमृतः", translation: "He who dwells in all beings... He is your Self, the Inner Controller, Immortal." }
+        ],
+        contemplation: { prompt: "The Guest Within", guidance: "Turn inward. Deeper than thought, deeper than feeling. A Presence is there. It is not 'you' (the ego), but it is the ground of 'you'. Bow to the Ruler within.", durationMinutes: 5 }
+    },
+
+    // ==================== DVAITA MISSING ====================
+    "five-differences": { // Re-mapped from panchabedha
+        id: "panchabedha",
+        title: "Pancha Bheda",
+        sanskritTitle: "पंच भेद",
+        synthesis: `
+            <p class="mb-4"><strong>Pancha Bheda</strong> (Five Differences) describes the absolute, eternal distinctions in reality according to Dvaita.</p>
+            <p class="mb-4">They are the differences between: 1. God and Soul, 2. God and Matter, 3. Soul and Matter, 4. Soul and Soul, 5. Matter and Matter.</p>
+            <p>These differences hold true even in liberation. Unity is a myth; harmony is the truth.</p>
+        `,
+        sources: [
+            { id: "madhva-bhashya-bheda", text: "Vishnu Tattva Vinirnaya", reference: "1", sanskrit: "जिवेशयोर्भिदा चैव जीवभेदः परस्परम्", translation: "The difference between Jiva and Ishvara, and between Jivas themselves..." }
+        ],
+        contemplation: { prompt: "The Truth of Difference", guidance: "Look around. You are not the chair. You are not your friend. Each thing is unique. Celebrate the diversity of God's creation, rather than trying to blur it into one.", durationMinutes: 5 }
+    },
+
+    "jiva-dvaita": {
+        id: "jiva-dvaita",
+        title: "Jiva (Dvaita)",
+        sanskritTitle: "जीव",
+        synthesis: `
+            <p class="mb-4">In Dvaita, the <strong>Jiva</strong> is atomic, conscious, and eternally an agent/enjoyer. But his agency is entirely dependent on God.</p>
+            <p class="mb-4">Jivas are essentially reflections (Pratibimba) of Vishnu (Bimba). Their nature varies eternally: some are fit for Mukti, others for Samsara, others for darkness (Taratamya).</p>
+        `,
+        sources: [
+            { id: "madhva-sutra", text: "Brahma Sutras", reference: "2.3.19", sanskrit: "उत्क्रान्तिगत्यागतीनाम्", translation: "The soul is atomic, as known from scripture regarding its passing out, going, and returning." }
+        ],
+        contemplation: { prompt: "Reflection of the Divine", guidance: "You are a mirror. If the mirror is clean, it reflects the Sun perfectly. You are not the Sun, but you can shine with His light. Polish the mirror.", durationMinutes: 5 }
+    },
+
+    "taratamya": {
+        id: "taratamya",
+        title: "Taratamya",
+        sanskritTitle: "तारतम्य",
+        synthesis: `
+            <p class="mb-4"><strong>Taratamya</strong> is the hierarchy of souls. Even in liberation, souls differ in their capacity to experience bliss (Ananda).</p>
+            <p class="mb-4">Just as vessels of different potential hold different amounts of water from the same ocean, souls enjoy God according to their inherent nature.</p>
+        `,
+        sources: [
+            { id: "madhva-logic", text: "Anuvyakhyana", reference: "3.4", sanskrit: "आनन्दतारतम्यं च", translation: "And there is gradation in Bliss." }
+        ],
+        contemplation: { prompt: "Unique Capacity", guidance: "Don't compare your spiritual cup to others. Your cup is unique. Filling it completely is your perfection. A small full cup is just as 'full' as a large full ocean.", durationMinutes: 5 }
+    },
+
+    "sakshi": {
+        id: "sakshi",
+        title: "Sakshi",
+        sanskritTitle: "साक्षी",
+        synthesis: `
+            <p class="mb-4"><strong>Sakshi</strong> is the intuitive faculty of the Self that witnesses everything—including the mind, ego, and deep sleep.</p>
+            <p class="mb-4">Unlike the mind which can be wrong, the Sakshi is always valid. It is the ultimate guarantor of knowledge. When you say 'I slept well,' it is Sakshi that knows.</p>
+        `,
+        sources: [
+            { id: "pramana-paddhati", text: "Pramana Paddhati", reference: "1", sanskrit: "स्वरूपिन्द्रियं साक्षी", translation: "The Sakshi is the sense-organ of the Self-essence." }
+        ],
+        contemplation: { prompt: "The Infallible Witness", guidance: "Mistakes happen in thought. But the one who knows 'I made a mistake'—is that one mistaken? Trust the Witness. It is your connection to Truth.", durationMinutes: 5 }
     }
 };
