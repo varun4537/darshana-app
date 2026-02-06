@@ -23,6 +23,13 @@ const notoSerifDevanagari = Noto_Serif_Devanagari({
 export const metadata: Metadata = {
   title: "Darshana | Hindu Philosophy Learning",
   description: "Systematic study of Vedanta and Yoga",
+  manifest: "/manifest.json",
+  themeColor: "#852E47",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Darshana",
+  },
 };
 
 export default function RootLayout({
