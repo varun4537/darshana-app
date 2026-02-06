@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Libre_Baskerville, Noto_Serif_Devanagari } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { BottomNav } from "@/components/ui/bottom-nav";
+import { UserProgressProvider } from "@/lib/context/user-progress";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -43,7 +45,10 @@ export default function RootLayout({
         className={`${inter.variable} ${libreBaskerville.variable} ${notoSerifDevanagari.variable} antialiased bg-parchment text-ink`}
       >
         <Providers>
-          {children}
+          <UserProgressProvider>
+            {children}
+            <BottomNav />
+          </UserProgressProvider>
         </Providers>
       </body>
     </html>

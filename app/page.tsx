@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, Menu, X, Home as HomeIcon, Book, Library, Timer, LogIn } from "lucide-react";
+import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, Menu, X, Home as HomeIcon, Book, Library, Timer, LogIn, Info } from "lucide-react";
 import Link from "next/link";
 import { darshanas } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
@@ -25,6 +25,7 @@ const MENU_ITEMS = [
   { label: "Glossary", href: "/glossary", icon: Book },
   { label: "Source Library", href: "/texts", icon: Library },
   { label: "Meditation Timer", href: "/meditation", icon: Timer },
+  { label: "About & Sources", href: "/about", icon: Info },
   { label: "Sign In", href: "/login", icon: LogIn },
 ];
 
@@ -40,7 +41,7 @@ export default function Home() {
         <Link href="/" className="font-serif text-2xl font-bold text-foreground">Darshana</Link>
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="p-2 text-foreground hover:bg-ruby/10 rounded-full transition-colors"
+          className="p-3 text-foreground hover:bg-ruby/10 rounded-full transition-colors"
         >
           <span className="sr-only">Menu</span>
           <Menu className="w-6 h-6" />
@@ -72,7 +73,8 @@ export default function Home() {
                 <span className="font-serif text-xl font-bold text-ruby-light">Menu</span>
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="p-2 hover:bg-ruby/10 rounded-full transition-colors"
+                  className="p-3 hover:bg-ruby/10 rounded-full transition-colors"
+                  aria-label="Close menu"
                 >
                   <X className="w-6 h-6" />
                 </button>

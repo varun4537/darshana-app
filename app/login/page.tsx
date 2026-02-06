@@ -4,7 +4,7 @@ import { useState } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { LogIn, LogOut, Flower2, ShieldCheck, Flame, Infinity } from "lucide-react";
+import { LogIn, LogOut, Flower2, ShieldCheck, Flame, Infinity as InfinityIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -107,7 +107,7 @@ export default function LoginPage() {
                                         href="/"
                                         className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-surface/50 border border-white/5 hover:bg-surface/80 transition-all text-center group"
                                     >
-                                        <Infinity className="w-6 h-6 text-nectar shadow-glow group-hover:scale-110 transition-transform" />
+                                        <InfinityIcon className="w-6 h-6 text-nectar shadow-glow group-hover:scale-110 transition-transform" />
                                         <span className="text-xs font-bold uppercase tracking-tighter">Explore</span>
                                     </Link>
                                 </div>
