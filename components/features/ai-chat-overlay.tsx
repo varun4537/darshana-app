@@ -13,6 +13,97 @@ type Message = {
     error?: boolean;
 };
 
+const MessageContent = ({ text }: { text: string }) => {
+    const [isSourcesOpen, setIsSourcesOpen] = React.useState(false);
+
+    // Parse text and extract sources
+    const { parts, sources } = React.useMemo(() => {
+        const sourceRegex = /\[([\w\s.-]+?\.pdf)\]/g;
+        const matches = [...text.matchAll(sourceRegex)];
+
+        if (matches.length === 0) return { parts: [text], sources: [] };
+
+        const uniqueSources: string[] = [];
+        const parts: React.ReactNode[] = [];
+        let lastIndex = 0;
+
+        matches.forEach((match) => {
+            const [fullMatch, sourceName] = match;
+            const index = match.index!;
+
+            // Add text before match
+            if (index > lastIndex) {
+                parts.push(text.substring(lastIndex, index));
+            }
+
+            // Get or add source index
+            let sourceIndex = uniqueSources.indexOf(sourceName);
+            if (sourceIndex === -1) {
+                uniqueSources.push(sourceName);
+                sourceIndex = uniqueSources.length - 1;
+            }
+
+            // Add citation marker
+            parts.push(
+                <sup
+                    key={index}
+                    className="text-[10px] font-bold text-ruby cursor-pointer hover:underline mx-0.5 select-none"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsSourcesOpen(true);
+                    }}
+                    title={sourceName}
+                >
+                    [{sourceIndex + 1}]
+                </sup>
+            );
+
+            lastIndex = index + fullMatch.length;
+        });
+
+        // Add remaining text
+        if (lastIndex < text.length) {
+            parts.push(text.substring(lastIndex));
+        }
+
+        return { parts, sources: uniqueSources };
+    }, [text]);
+
+    // If no sources found, just render text
+    if (sources.length === 0) {
+        return <p className="whitespace-pre-wrap">{text}</p>;
+    }
+
+    return (
+        <div>
+            <p className="whitespace-pre-wrap">
+                {parts}
+            </p>
+            <div className="mt-2 pt-2 border-t border-ruby/10">
+                <button
+                    onClick={() => setIsSourcesOpen(!isSourcesOpen)}
+                    className="text-[10px] uppercase tracking-wider text-ruby hover:text-ruby-dark flex items-center gap-1 font-medium transition-colors"
+                >
+                    {isSourcesOpen ? 'Hide Sources' : 'View Sources'}
+                    <span className="bg-ruby/10 px-1.5 py-0.5 rounded-full text-[10px]">{sources.length}</span>
+                </button>
+
+                {isSourcesOpen && (
+                    <div className="mt-2 text-xs space-y-1 bg-surface/50 p-2 rounded-lg border border-ruby/5">
+                        {sources.map((src, i) => (
+                            <div key={i} className="flex gap-2 text-foreground-muted/80">
+                                <span className="font-mono text-ruby text-[10px] shrink-0">[{i + 1}]</span>
+                                <span className="truncate text-[10px]">{src}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+
 export function AiChatOverlay() {
     const { isOpen, openChat, closeChat } = useChat();
     const [input, setInput] = React.useState("");
@@ -34,11 +125,11 @@ export function AiChatOverlay() {
         scrollToBottom();
     }, [messages]);
 
-    const handleSend = async () => {
-        if (!input.trim() || isTyping) return;
+    const handleSend = async (messageText?: string) => {
+        const textToSend = messageText || input;
+        if (!textToSend.trim() || isTyping) return;
 
-        const userMsg: Message = { id: Date.now().toString(), role: 'user', text: input };
-        const currentInput = input;
+        const userMsg: Message = { id: Date.now().toString(), role: 'user', text: textToSend };
         setMessages(prev => [...prev, userMsg]);
         setInput("");
         setIsTyping(true);
@@ -49,7 +140,7 @@ export function AiChatOverlay() {
             .map(m => ({ role: m.role, text: m.text }));
 
         try {
-            const result = await chatWithGemini(currentInput, history);
+            const result = await chatWithGemini(textToSend, history);
 
             if (result.error) {
                 setMessages(prev => [...prev, {
@@ -79,11 +170,11 @@ export function AiChatOverlay() {
 
     return (
         <>
-            {/* Floating Action Button */}
+            {/* Floating Action Button - Moved up to avoid covering bottom nav profile */}
             <button
                 onClick={openChat}
                 className={cn(
-                    "fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl transition-all duration-300",
+                    "fixed bottom-24 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl transition-all duration-300",
                     "bg-ruby text-foreground hover:scale-105 hover:bg-ruby-light",
                     isOpen && "opacity-0 pointer-events-none"
                 )}
@@ -133,9 +224,30 @@ export function AiChatOverlay() {
                                     <span className="text-xs font-medium uppercase">Error</span>
                                 </div>
                             )}
-                            <p className="whitespace-pre-wrap">{msg.text}</p>
+                            <MessageContent text={msg.text} />
                         </div>
                     ))}
+
+                    {/* Sample Questions - Only show when just the welcome message exists */}
+                    {messages.length === 1 && (
+                        <div className="grid grid-cols-1 gap-2 mt-4 px-2">
+                            {[
+                                "What is the difference between Atman and Brahman?",
+                                "Explain the concept of Maya.",
+                                "How do I practice Karma Yoga?",
+                                "What are the four qualifications (Sadhana Chatushtaya)?"
+                            ].map((question, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => handleSend(question)}
+                                    className="text-left text-xs p-3 rounded-xl bg-surface/40 hover:bg-surface border border-ruby/5 hover:border-ruby/20 transition-all text-foreground-muted hover:text-foreground"
+                                >
+                                    "{question}"
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
                     {isTyping && (
                         <div className="mr-auto bg-surface text-foreground rounded-2xl rounded-tl-none border border-ruby/10 p-3 flex items-center gap-2">
                             <span className="w-2 h-2 bg-foreground-muted rounded-full animate-bounce" />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, Menu, X, Home as HomeIcon, Book, Library, Timer, LogIn, Info } from "lucide-react";
+import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, Menu, X, Home as HomeIcon, Book, Library, Timer, LogIn, Info, Layout } from "lucide-react";
 import Link from "next/link";
 import { darshanas, getMainSchools } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ const ICON_MAP: Record<string, any> = {
 
 const MENU_ITEMS = [
   { label: "Home", href: "/", icon: HomeIcon },
+  { label: "Dashboard", href: "/dashboard", icon: Layout },
   { label: "Darshanas", href: "/#schools", icon: Flower2 },
   { label: "Glossary", href: "/glossary", icon: Book },
   { label: "Source Library", href: "/texts", icon: Library },
@@ -95,7 +96,10 @@ export default function Home() {
                 ))}
               </div>
 
-              <div className="mt-auto pt-8 border-t border-ruby/10">
+              <div className="mt-auto pt-8 border-t border-ruby/10 space-y-4">
+                <a href="mailto:support@darshana.app" className="block w-full py-2 px-4 text-center rounded-lg bg-ruby/10 text-ruby-light font-medium hover:bg-ruby/20 transition-colors">
+                  Contact Us
+                </a>
                 <p className="text-xs text-foreground-muted/60 text-center">
                   Darshana v1.0 • Authentic Wisdom
                 </p>

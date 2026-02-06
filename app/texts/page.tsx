@@ -60,10 +60,16 @@ export default function LibraryPage() {
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex items-center gap-1 text-xs font-bold text-ruby-light group-hover:translate-x-1 transition-transform cursor-pointer">
-                                    BROWSE
-                                    <ArrowRight className="w-3" />
-                                </div>
+                                {text.url ? (
+                                    <Link href={text.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-bold text-ruby-light group-hover:translate-x-1 transition-transform cursor-pointer">
+                                        BROWSE
+                                        <ArrowRight className="w-3" />
+                                    </Link>
+                                ) : (
+                                    <div className="flex items-center gap-1 text-xs font-bold text-foreground-muted cursor-not-allowed">
+                                        COMING SOON
+                                    </div>
+                                )}
                             </div>
                         </Card>
                     ))}

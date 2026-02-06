@@ -6,6 +6,7 @@ export type SourceText = {
     chapters?: number;
     verses?: number;
     file?: string;
+    url?: string;
 };
 
 export const sourceTexts: SourceText[] = [
@@ -15,7 +16,8 @@ export const sourceTexts: SourceText[] = [
         sanskritTitle: "भगवद्गीता",
         description: "The Song of the Lord. A 700-verse dialogue between Krishna and Arjuna on the battlefield of Kurukshetra, covering the essence of Vedantic philosophy.",
         chapters: 18,
-        verses: 700
+        verses: 700,
+        url: 'https://www.gitasupersite.iitk.ac.in/'
     },
     {
         id: "upanishads",
@@ -23,7 +25,8 @@ export const sourceTexts: SourceText[] = [
         sanskritTitle: "उपनिषद्",
         description: "The philosophical core of the Vedas, consisting of 10-12 principal texts that explore the nature of Ultimate Reality (Brahman) and the Self (Atman).",
         chapters: 10,
-        verses: 108
+        verses: 108,
+        url: 'https://www.upanishad.org/'
     },
     {
         id: "yoga-sutras",
@@ -31,7 +34,8 @@ export const sourceTexts: SourceText[] = [
         sanskritTitle: "योगसूत्र",
         description: "The foundational text of Classical Yoga, outlining the eight-fold path (Ashtanga) to mental stillness and liberation.",
         chapters: 4,
-        verses: 196
+        verses: 196,
+        url: 'https://sv.svyasa.org/yoga-sutras'
     },
     {
         id: "brahma-sutras",
@@ -39,7 +43,8 @@ export const sourceTexts: SourceText[] = [
         sanskritTitle: "ब्रह्मसूत्र",
         description: "A profound summary of Upanishadic teachings, providing a systematic and logical framework for Vedanta.",
         chapters: 4,
-        verses: 555
+        verses: 555,
+        url: 'https://www.swami-krishnananda.org/bs_00.html'
     },
     {
         id: "vivekachudamani",
@@ -47,6 +52,7 @@ export const sourceTexts: SourceText[] = [
         sanskritTitle: "विवेकचूडामणि",
         description: "Adi Shankaracharya's didactic poem on 'The Crest-Jewel of Discrimination,' serving as a comprehensive introduction to Advaita Vedanta.",
         chapters: 1,
-        verses: 580
+        verses: 580,
+        url: 'https://shlokam.org/vivekachudamani/'
     }
 ];

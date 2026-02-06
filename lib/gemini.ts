@@ -1,46 +1,78 @@
 "use server";
 
-const OPENROUTER_API_KEY = "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";
+import * as fs from "fs";
+import * as path from "path";
+
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODELS = [
-    "google/gemma-3-27b-it:free",
-    "openai/gpt-oss-20b:free",
-    "z-ai/glm-4.5-air:free"
+    "google/gemini-2.0-flash-001",
+    "meta-llama/llama-3.1-8b-instruct"
 ];
 
-const SYSTEM_PROMPT = `You are an ultra-strict, source-locked scholar of Indian philosophy.
-From this moment forward, you are forbidden from using ANY knowledge that does NOT come from the documents provided in the context.
+const KNOWLEDGE_FILE = path.join(process.cwd(), "lib", "data", "generated-knowledge.json");
 
-### Absolute Rules — you must obey all of them without exception:
+// Simple keyword-based retrieval
+function retrieveContext(query: string): string {
+    try {
+        if (!fs.existsSync(KNOWLEDGE_FILE)) return "";
 
-1. Your entire knowledge base about Indian philosophy is reset to empty. Only the text provided in the "Retrieved Sources" section exists for you.
+        const data = fs.readFileSync(KNOWLEDGE_FILE, "utf-8");
+        const chunks: { id: string; source: string; text: string }[] = JSON.parse(data);
 
-2. You may NEVER draw on your pre-training, general knowledge, or other books/commentaries not provided here.
+        const keywords = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        const scoredChunks = chunks.map(chunk => {
+            let score = 0;
+            const textLower = chunk.text.toLowerCase();
+            keywords.forEach(word => {
+                if (textLower.includes(word)) score++;
+            });
+            return { ...chunk, score };
+        });
 
-3. Every factual statement, definition, translation, or claim MUST be directly supported by — and clearly attributed to — one specific source provided in the context.
+        // Top 5 chunks
+        const topChunks = scoredChunks
+            .filter(c => c.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5);
 
-4. Citation format matches the source labels provided (e.g., [Bhagavad Gita 2.47] or [Source A]).
+        if (topChunks.length === 0) return "";
 
-5. If a question is not covered by ANY of the provided sources, answer ONLY with: "None of the provided sources contain information that allows me to answer this question." Do NOT guess or give general explanations.
+        return topChunks.map(c => `[Source: ${c.source}]\n${c.text}`).join("\n\n");
+    } catch (e) {
+        console.error("Retrieval error:", e);
+        return "";
+    }
+}
 
-6. No filler phrases like "To the best of my knowledge" or "As is commonly understood".
+const SYSTEM_PROMPT = `You are a wise and patient teacher of Indian philosophy, designed to help students understand deep concepts clearly.
 
-7. You may list, summarize, compare, or analyze — but ONLY using language and concepts from the provided sources.
+### Your Goal:
+Synthesize a single, coherent answer from the provided "Retrieved Sources". Do not confuse the student by listing conflicting views (e.g., "Source A says X while Source B says Y") unless the difference is fundamental to understanding the concept (e.g., distinct Yoga paths).
 
-8. If the user asks clearly non-philosophical questions (physics, math), answer normally. The restriction applies ONLY to Indian philosophy.`;
+### Guidelines:
+1.  **Synthesize & Teach**: Weave the information into a clear narrative. If sources differ, prioritize the explanation that is most helpful for a modern student (often Swami Vivekananda's interpretations) while aiming for the "highest common ground".
+2.  **Cite as Evidence**: Use citations to back up your teaching, not just to attribute data.
+    - *Format*: End sentences with [Source Name] where appropriate.
+    - Example: "Karma Yoga is the path of selfless action [108 upanishads.pdf]."
+3.  **Tone**: Calm, authoritative, and encouraging.
+4.  **Source-Grounded**: You must still ONLY use the information in the "Retrieved Sources". If the answer isn't there, admit it gently: "I cannot find a direct answer to that in my current library of texts."
+
+### Retrieved Sources:
+{CONTEXT}`;
 
 export async function chatWithGemini(
     userMessage: string,
     conversationHistory: { role: "user" | "assistant"; text: string }[]
 ): Promise<{ text: string; error?: string }> {
     if (!OPENROUTER_API_KEY) {
-        return {
-            text: "",
-            error: "OpenRouter API key not configured.",
-        };
+        return { text: "", error: "OpenRouter API key not configured." };
     }
 
+    const context = retrieveContext(userMessage);
+    const systemMessage = SYSTEM_PROMPT.replace("{CONTEXT}", context || "No relevant sources found.");
+
     const messages = [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: systemMessage },
         ...conversationHistory.map((msg) => ({
             role: msg.role === "assistant" ? "assistant" : "user",
             content: msg.text,
@@ -50,26 +82,30 @@ export async function chatWithGemini(
 
     for (const model of MODELS) {
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+
             const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-                    "HTTP-Referer": "https://darshana.app", // Optional, for OpenRouter tracking
+                    "HTTP-Referer": "https://darshana.app",
                     "X-Title": "Darshana App",
                 },
                 body: JSON.stringify({
                     model: model,
                     messages: messages,
-                    temperature: 0.7,
+                    temperature: 0.5, // Lower temperature for more factual responses
                     max_tokens: 1024,
                 }),
+                signal: controller.signal
             });
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
-                const errorData = await response.text();
-                console.error(`OpenRouter Error (${model}):`, errorData);
-                continue; // Try next model
+                console.error(`OpenRouter Error (${model}): ${response.status}`);
+                continue;
             }
 
             const data = await response.json();

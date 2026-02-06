@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Home, Compass, User, BookOpen } from "lucide-react";
+import { Home, Compass, User, BookOpen, Layout } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ export function BottomNav() {
 
     const NAV_ITEMS = [
         { label: "Home", href: "/", icon: Home },
+        { label: "Path", href: "/dashboard", icon: Layout },
         { label: "Schools", href: "/#schools", icon: BookOpen },
         { label: "Practice", href: "/meditation", icon: Compass },
         { label: "Profile", href: "/login", icon: User },
