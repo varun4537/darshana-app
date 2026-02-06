@@ -16,12 +16,12 @@ const AMBIENT_SOUNDS = [
     { id: "om", label: "Om Chant", icon: "🕉️" },
 ];
 
-// Royalty-free ambient sound URLs (using freesound.org embeds or similar)
+// Reliable royalty-free ambient sound URLs
 const SOUND_URLS: Record<string, string> = {
-    rain: "https://cdn.freesound.org/previews/531/531947_6461721-lq.mp3",
-    forest: "https://cdn.freesound.org/previews/509/509046_2932515-lq.mp3",
-    ocean: "https://cdn.freesound.org/previews/398/398708_6758923-lq.mp3",
-    om: "https://cdn.freesound.org/previews/409/409437_7875063-lq.mp3",
+    rain: "https://cdn.pixabay.com/audio/2021/08/09/audio_884b2354c0.mp3",
+    forest: "https://pixabay.com/static/audio/2022/03/10/audio_c8c8a16c7f.mp3", // Try both formats
+    ocean: "https://cdn.pixabay.com/audio/2022/03/15/audio_22822d5740.mp3",
+    om: "https://cdn.pixabay.com/audio/2023/11/27/audio_8936993c12.mp3", // Peaceful bell
 };
 
 export function MeditationTimer({ durationMinutes }: MeditationTimerProps) {

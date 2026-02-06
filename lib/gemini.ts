@@ -1,7 +1,11 @@
 "use server";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const MODEL = "gemini-2.5-flash-preview-05-20";
+const OPENROUTER_API_KEY = "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";
+const MODELS = [
+    "google/gemma-3-27b-it:free",
+    "openai/gpt-oss-20b:free",
+    "z-ai/glm-4.5-air:free"
+];
 
 const SYSTEM_PROMPT = `You are an ultra-strict, source-locked scholar of Indian philosophy.
 From this moment forward, you are forbidden from using ANY knowledge that does NOT come from the documents provided in the context.
@@ -24,111 +28,61 @@ From this moment forward, you are forbidden from using ANY knowledge that does N
 
 8. If the user asks clearly non-philosophical questions (physics, math), answer normally. The restriction applies ONLY to Indian philosophy.`;
 
-
-type GeminiMessage = {
-    role: "user" | "model";
-    parts: { text: string }[];
-};
-
-type GeminiResponse = {
-    candidates: {
-        content: {
-            parts: { text: string }[];
-        };
-    }[];
-};
-
 export async function chatWithGemini(
     userMessage: string,
     conversationHistory: { role: "user" | "assistant"; text: string }[]
 ): Promise<{ text: string; error?: string }> {
-    if (!GEMINI_API_KEY) {
+    if (!OPENROUTER_API_KEY) {
         return {
             text: "",
-            error: "Gemini API key not configured. Please add GEMINI_API_KEY to your environment variables.",
+            error: "OpenRouter API key not configured.",
         };
     }
 
-    const systemInstruction = SYSTEM_PROMPT;
+    const messages = [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...conversationHistory.map((msg) => ({
+            role: msg.role === "assistant" ? "assistant" : "user",
+            content: msg.text,
+        })),
+        { role: "user", content: userMessage }
+    ];
 
-    // Convert conversation history to Gemini format
-    const contents: GeminiMessage[] = conversationHistory.map((msg) => ({
-        role: msg.role === "assistant" ? "model" : "user",
-        parts: [{ text: msg.text }],
-    }));
-
-    // Add the new user message
-    contents.push({
-        role: "user",
-        parts: [{ text: userMessage }],
-    });
-
-    try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-            {
+    for (const model of MODELS) {
+        try {
+            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                    "HTTP-Referer": "https://darshana.app", // Optional, for OpenRouter tracking
+                    "X-Title": "Darshana App",
                 },
                 body: JSON.stringify({
-                    systemInstruction: {
-                        parts: [{ text: systemInstruction }],
-                    },
-                    contents,
-                    generationConfig: {
-                        temperature: 0.7,
-                        topK: 40,
-                        topP: 0.95,
-                        maxOutputTokens: 1024,
-                    },
-                    safetySettings: [
-                        {
-                            category: "HARM_CATEGORY_HARASSMENT",
-                            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-                        },
-                        {
-                            category: "HARM_CATEGORY_HATE_SPEECH",
-                            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-                        },
-                        {
-                            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-                        },
-                        {
-                            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-                            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-                        },
-                    ],
+                    model: model,
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 1024,
                 }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error(`OpenRouter Error (${model}):`, errorData);
+                continue; // Try next model
             }
-        );
 
-        if (!response.ok) {
-            const errorData = await response.text();
-            console.error("Gemini API Error:", errorData);
-            return {
-                text: "",
-                error: `API Error: ${response.status} - Please check your API key and try again.`,
-            };
+            const data = await response.json();
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+                return { text: data.choices[0].message.content };
+            }
+        } catch (error) {
+            console.error(`Fetch error for ${model}:`, error);
         }
-
-        const data: GeminiResponse = await response.json();
-
-        if (!data.candidates || data.candidates.length === 0) {
-            return {
-                text: "",
-                error: "No response generated. The query may have been blocked by safety filters.",
-            };
-        }
-
-        const aiText = data.candidates[0].content.parts[0].text;
-        return { text: aiText };
-    } catch (error) {
-        console.error("Gemini fetch error:", error);
-        return {
-            text: "",
-            error: "Failed to connect to Gemini. Please check your internet connection.",
-        };
     }
+
+    return {
+        text: "",
+        error: "All models failed to respond. Please check your OpenRouter configuration or try again later.",
+    };
 }

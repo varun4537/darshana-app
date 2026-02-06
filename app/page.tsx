@@ -1,8 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users } from "lucide-react";
+import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, Menu, X, Home as HomeIcon, Book, Library, Timer, LogIn } from "lucide-react";
 import Link from "next/link";
 import { darshanas } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ICON_MAP: Record<string, any> = {
   'scale': Scale,
@@ -15,7 +19,17 @@ const ICON_MAP: Record<string, any> = {
   'users': Users
 };
 
+const MENU_ITEMS = [
+  { label: "Home", href: "/", icon: HomeIcon },
+  { label: "Darshanas", href: "/#schools", icon: Flower2 },
+  { label: "Glossary", href: "/glossary", icon: Book },
+  { label: "Source Library", href: "/texts", icon: Library },
+  { label: "Meditation Timer", href: "/meditation", icon: Timer },
+  { label: "Sign In", href: "/login", icon: LogIn },
+];
+
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const allDarshanas = Object.values(darshanas);
 
   return (
@@ -23,12 +37,70 @@ export default function Home() {
 
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-ruby/20 px-6 py-4 flex justify-between items-center">
-        <div className="font-serif text-2xl font-bold text-foreground">Darshana</div>
-        <button className="p-2 text-foreground hover:bg-ruby/10 rounded-full transition-colors">
+        <Link href="/" className="font-serif text-2xl font-bold text-foreground">Darshana</Link>
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="p-2 text-foreground hover:bg-ruby/10 rounded-full transition-colors"
+        >
           <span className="sr-only">Menu</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          <Menu className="w-6 h-6" />
         </button>
       </nav>
+
+      {/* Side Drawer */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
+            />
+
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-[280px] bg-background border-l border-ruby/20 shadow-2xl z-[70] p-6 flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-10">
+                <span className="font-serif text-xl font-bold text-ruby-light">Menu</span>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-2 hover:bg-ruby/10 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {MENU_ITEMS.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-ruby/10 text-foreground-muted hover:text-foreground transition-all group"
+                  >
+                    <item.icon className="w-5 h-5 text-ruby/60 group-hover:text-ruby-light" />
+                    <span className="font-medium text-lg">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-auto pt-8 border-t border-ruby/10">
+                <p className="text-xs text-foreground-muted/60 text-center">
+                  Darshana v1.0 • Authentic Wisdom
+                </p>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <header className="relative bg-gradient-to-b from-ruby-dark via-indigo to-background text-foreground pt-16 pb-20 px-6 text-center overflow-hidden">

@@ -477,22 +477,6 @@ export const conceptDetails: Record<string, ConceptDetail> = {
         contemplation: { prompt: "Rest as Pure Awareness", guidance: "Right now, let go of everything perceived. Body, breath, thoughts—all arise in You. What are You, as the space in which all appears? Rest as That—complete, needing nothing.", durationMinutes: 10 }
     },
 
-    // ==================== NYAYA CONCEPTS ====================
-    "pramana-nyaya": {
-        id: "pramana-nyaya",
-        title: "Pramana",
-        sanskritTitle: "प्रमाण",
-        synthesis: `
-            <p class="mb-4"><strong>Pramana</strong> is a valid means of knowledge. The Nyaya school asserts that valid knowledge (Prama) depends on the validity of the method used to acquire it.</p>
-            <p class="mb-4">Nyaya accepts four Pramanas: <em>Pratyaksha</em> (Perception), <em>Anumana</em> (Inference), <em>Upamana</em> (Comparison), and <em>Shabda</em> (Verbal Testimony).</p>
-            <p>For Naiyayikas, liberation comes from the true knowledge of the categories of reality, which eliminates false knowledge (Mithyajhana).</p>
-        `,
-        sources: [
-            { id: "nyaya-1-1-1", text: "Nyaya Sutras", reference: "1.1.1", sanskrit: "प्रमाणप्रमेया... तत्त्वज्ञानान्निःश्रेयसाधिगमः", translation: "Supreme felicity is attained by the knowledge of the true nature of sixteen categories, beginning with Pramana." },
-            { id: "nyaya-1-1-3", text: "Nyaya Sutras", reference: "1.1.3", sanskrit: "प्रत्यक्षानुमानोपमानशब्दाः प्रमाणानि", translation: "Perception, Inference, Comparison, and Word are the means of right knowledge." }
-        ],
-        contemplation: { prompt: "Examine Your Knowing", guidance: "Pick an object near you. How do you know it exists? You see it (Perception). You know its name by learning (Testimony). Reflect on how you know what you know.", durationMinutes: 5 }
-    },
 
     // ==================== VAISHESHIKA CONCEPTS ====================
     "padartha": {
@@ -510,21 +494,6 @@ export const conceptDetails: Record<string, ConceptDetail> = {
         contemplation: { prompt: "Categorize Experience", guidance: "Look at a flower. See the substance (flower), the quality (redness), the action (blooming). See how reality is built of these categories.", durationMinutes: 5 }
     },
 
-    // ==================== SAMKHYA CONCEPTS ====================
-    "purusha-samkhya": {
-        id: "purusha-samkhya",
-        title: "Purusha",
-        sanskritTitle: "पुरुष",
-        synthesis: `
-            <p class="mb-4"><strong>Purusha</strong> in Samkhya is pure Consciousness, the Witness, the Subject. It is distinct from Prakriti (matter) and is inactive, eternal, and free.</p>
-            <p class="mb-4">Unlike Advaita's one Brahman, Samkhya posits a plurality of Purushas—one for each being. However, the essential nature of all Purushas is identical: pure awareness.</p>
-            <p>Bondage is the confusion of Purusha with the movements of Prakriti (such as the mind and ego).</p>
-        `,
-        sources: [
-            { id: "samkhya-19", text: "Samkhya Karika", reference: "19", sanskrit: "तस्माच्च विपर्यासात्सिद्धम् साक्षित्वमस्य पुरुषस्य", translation: "From the contrast with Prakriti, Purusha is proven to be the Witness, solitary, and a non-doer." }
-        ],
-        contemplation: { prompt: "I Am The Seer", guidance: "Thoughts come and go. Feelings come and go. But You—the Seer—are always there. You are the screen on which the movie plays. Be the Screen.", durationMinutes: 7 }
-    },
 
     // ==================== MIMAMSA CONCEPTS ====================
     "dharma-mimamsa": {
@@ -571,5 +540,71 @@ export const conceptDetails: Record<string, ConceptDetail> = {
             { id: "madhva-bhashya", text: "Brahma Sutra Bhashya", reference: "1.1.1", sanskrit: "नारायणं गुणैः सर्वैरुदीर्णं...", translation: "I bow to Narayana, who is complete with all optimal qualities and free from all defects." }
         ],
         contemplation: { prompt: "Eternal Servant", guidance: "Feel the relationship of a beloved servant to a perfect Master. There is sweetness in this duality. Offer every breath as service to the Supreme.", durationMinutes: 5 }
+    },
+
+    // ==================== SAMKHYA CONCEPTS ====================
+    "purusha-samkhya": {
+        id: "purusha-samkhya",
+        title: "Purusha",
+        sanskritTitle: "पुरुष",
+        synthesis: `
+            <p class="mb-4"><strong>Purusha</strong> in Samkhya is the principle of pure Consciousness. It is the silent Witness (Sakshi), eternal, inactive, and distinct from the material world.</p>
+            <p class="mb-4">While modern science sees consciousness as a product of the brain, Samkhya sees Consciousness as the fundamental reality. Purusha does not 'do' anything; it simply 'is'. It is the light that illumines all mental and physical activities provided by Prakriti.</p>
+            <p>Liberation in Samkhya occurs when Purusha realizes it is completely separate from the workings of matter. This is called <em>Kaivalya</em> (isolation).</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-17", text: "Samkhya Karika", reference: "17", sanskrit: "सङ्घातपरार्थत्वात् त्रिगुणादिविपर्ययात्", translation: "Purusha exists because composite objects exist for another's use, and because there must be a controller." },
+            { id: "source-book-432", text: "A Source Book in Indian Philosophy", reference: "p. 432", sanskrit: "", translation: "Purusha is the spectator, ever-free, and the witness of nature's activities." }
+        ],
+        contemplation: { prompt: "The Silent Watcher", guidance: "Imagine you are a screen, and the world is a movie. The movie changes, but the screen remains untouched. Realize that you are the screen (Consciousness), not the characters or the plot.", durationMinutes: 8 }
+    },
+
+    prakriti: {
+        id: "prakriti",
+        title: "Prakriti",
+        sanskritTitle: "प्रकृति",
+        synthesis: `
+            <p class="mb-4"><strong>Prakriti</strong> is primordial Nature—the matrix of all material existence. It is the unmanifest (Avyakta) source from which everything from stars to thoughts evolves.</p>
+            <p class="mb-4">Prakriti is composed of three Gunas (qualities) in perfect equilibrium: Sattva (purity/light), Rajas (activity/passion), and Tamas (inertia/darkness). When this balance is disturbed by the proximity of Purusha, the world begins to evolve.</p>
+            <p>Everything we call 'nature,' 'matter,' or even 'mind' is a modification of Prakriti. It exists for the experience and eventual liberation of Purusha.</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-3", text: "Samkhya Karika", reference: "3", sanskrit: "मूलप्रकृतिरविकृतिः", translation: "Primordial nature is the root-cause; it is not an evolute." },
+            { id: "hiriyanna-271", text: "Outlines of Indian Philosophy", reference: "p. 271", sanskrit: "", translation: "Prakriti is the non-intelligent, active principle, ever-changing and infinite." }
+        ],
+        contemplation: { prompt: "Dynamics of Nature", guidance: "Observe the Gunas in your day. When are you focused (Sattva)? When are you restless (Rajas)? When are you tired (Tamas)? See these as movements of nature (Prakriti), not your true Self.", durationMinutes: 5 }
+    },
+
+    // ==================== NYAYA CONCEPTS ====================
+    "pramana-nyaya": {
+        id: "pramana-nyaya",
+        title: "Pramana",
+        sanskritTitle: "प्रमाण",
+        synthesis: `
+            <p class="mb-4"><strong>Pramana</strong> is the core of Nyaya epistemology. It refers to the valid means of knowledge—the instruments through which we attain true cognition of reality.</p>
+            <p class="mb-4">Nyaya recognizes four distinct Pramanas: <em>Pratyaksha</em> (Perception), <em>Anumana</em> (Inference), <em>Upamana</em> (Comparison), and <em>Shabda</em> (Verbal Testimony). Each is a rigorous method to ensure that our knowledge corresponds to the actual state of things.</p>
+            <p>For the Naiyayika (follower of Nyaya), liberation (Apavarga) is achieved by the correct knowledge of the sixteen categories (Padarthas), which starts with understanding the Pramanas.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-3", text: "Nyaya Sutras", reference: "1.1.3", sanskrit: "प्रत्यक्षानुमानोपमानशब्दाः प्रमाणानि", translation: "Perception, inference, comparison and word (testimony) are the means of right knowledge." },
+            { id: "source-book-358", text: "A Source Book in Indian Philosophy", reference: "p. 358", sanskrit: "", translation: "Knowledge is the manifestation of objects. The means of knowledge is the instrument of this manifestation." }
+        ],
+        contemplation: { prompt: "Observe the Knower", guidance: "Pick up an object. Notice how you know it. Is it through direct sight? Through inference? Now, turn your attention to the 'awareness' that registers this knowledge. Rest in the purity of that awareness.", durationMinutes: 5 }
+    },
+
+    anumana: {
+        id: "anumana",
+        title: "Anumana",
+        sanskritTitle: "अनुमान",
+        synthesis: `
+            <p class="mb-4"><strong>Anumana</strong> (Inference) is the logical process of reaching a conclusion based on a previously perceived sign (Linga) or reason (Hetu).</p>
+            <p class="mb-4">It is famously illustrated by the five-membered syllogism: 1. Proposition (The hill is on fire), 2. Reason (Because it has smoke), 3. Example (Wherever there is smoke, there is fire, as in a kitchen), 4. Application (The hill likewise has smoke), and 5. Conclusion (Therefore, the hill is on fire).</p>
+            <p>Anumana is not just abstract logic; it is a tool to move from the known to the unknown, eventually leading to the realization of the Self.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-5", text: "Nyaya Sutras", reference: "1.1.5", sanskrit: "तत्पूर्वकं त्रिविधमनुमानं", translation: "Inference is of three kinds: a priori, a posteriori, and commonly seen." },
+            { id: "hiriyanna-253", text: "Outlines of Indian Philosophy", reference: "p. 253", sanskrit: "", translation: "Inference is the knowledge which follows after some other knowledge." }
+        ],
+        contemplation: { prompt: "The Logic of the Self", guidance: "If 'I think,' there must be a 'Thinker.' If there is 'experience,' there must be an 'Experiencer.' Step back from the thoughts and experience, and logically locate the Witness who precedes them all.", durationMinutes: 5 }
     }
-}
+};
