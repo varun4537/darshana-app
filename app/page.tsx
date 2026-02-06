@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, Menu, X, Home as HomeIcon, Book, Library, Timer, LogIn, Info } from "lucide-react";
 import Link from "next/link";
-import { darshanas } from "@/lib/data/content";
+import { darshanas, getMainSchools } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -31,10 +31,11 @@ const MENU_ITEMS = [
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const allDarshanas = Object.values(darshanas);
+  const mainDarshanas = getMainSchools();
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
+
 
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-ruby/20 px-6 py-4 flex justify-between items-center">
@@ -135,12 +136,12 @@ export default function Home() {
       </header>
 
       {/* Course Grid */}
-      <main className="flex-1 max-w-md mx-auto w-full px-4 -mt-8 mb-16 relative z-20">
+      <main className="flex-1 max-w-md mx-auto w-full px-4 -mt-8 pb-32 relative z-20" id="schools">
         <div className="grid grid-cols-2 gap-4">
 
-          {allDarshanas.map((darshana) => {
+          {mainDarshanas.map((darshana) => {
             const Icon = ICON_MAP[darshana.icon] || Flower2;
-            const isVedanta = darshana.slug.includes('advaita') || darshana.slug === 'dvaita';
+            const isVedanta = darshana.slug === 'vedanta';
 
             return (
               <Link key={darshana.id} href={`/${darshana.slug}`} className="block group">

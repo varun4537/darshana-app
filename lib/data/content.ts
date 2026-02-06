@@ -260,6 +260,20 @@ export const darshanas: Record<string, Darshana> = {
             { id: 'sakshi', title: 'Sakshi', sanskrit: 'साक्षी', description: 'The inner witness in each soul.', level: 'Intermediate' },
             { id: 'vishnu-sarvottama', title: 'Vishnu Sarvottama', sanskrit: 'विष्णु सर्वोत्तम', description: 'Vishnu as the Supreme above all.', level: 'Introductory' },
         ]
+    },
+    // ==================== VEDANTA (PARENT) ====================
+    vedanta: {
+        id: 'vedanta',
+        slug: 'vedanta',
+        title: 'Vedanta',
+        sanskritTitle: 'वेदान्त',
+        description: 'The culmination of the Vedas. Explore the relationship between Brahman, Atman, and the World through the three major schools: Advaita, Vishishtadvaita, and Dvaita.',
+        founder: 'Badarayana',
+        primaryText: 'Brahma Sutras',
+        gradient: 'from-indigo-900 via-slate-900 to-background',
+        accentColor: 'indigo',
+        icon: 'infinity',
+        concepts: []
     }
 };
 
