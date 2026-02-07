@@ -36,23 +36,58 @@ export default function AboutPage() {
                 {/* Sources & Methodology */}
                 <section>
                     <Card className="border-stone-800 bg-surface/30">
-                        <CardContent className="p-8 space-y-4">
+                        <CardContent className="p-8 space-y-6">
                             <div className="flex items-center gap-3 text-amber-500 mb-2">
                                 <BookOpen className="w-6 h-6" />
-                                <h2 className="text-2xl font-serif font-bold">Sources</h2>
+                                <h2 className="text-2xl font-serif font-bold">Primary Sources</h2>
                             </div>
                             <p className="text-foreground/90">
-                                All content in this application is grounded in the primary texts (Sutras) and authoritative commentaries (Bhashyas) of the respective schools.
-                                Key sources include:
+                                This application is built upon the foundational texts (Prasthana) of Indian Philosophy.
+                                We rely on authoritative translations and commentaries to ensure accuracy.
                             </p>
-                            <ul className="list-disc list-inside space-y-2 text-foreground-muted ml-2">
-                                <li><strong>Nyaya:</strong> Nyaya Sutras of Gautama, Vatsyayana Bhashya.</li>
-                                <li><strong>Vaisheshika:</strong> Vaisheshika Sutras of Kanada, Prashastapada Bhashya.</li>
-                                <li><strong>Samkhya:</strong> Samkhya Karika of Ishvarakrishna.</li>
-                                <li><strong>Yoga:</strong> Yoga Sutras of Patanjali, Vyasa Bhashya.</li>
-                                <li><strong>Mimamsa:</strong> Mimamsa Sutras of Jaimini, Shabara Bhashya.</li>
-                                <li><strong>Vedanta:</strong> Brahma Sutras, Upanishads, and commentaries by Shankara, Ramanuja, and Madhva.</li>
-                            </ul>
+
+                            <div className="grid md:grid-cols-2 gap-6 text-sm">
+                                <div>
+                                    <h3 className="font-bold text-ruby-light mb-2">Nyaya & Vaisheshika</h3>
+                                    <ul className="space-y-1 text-foreground-muted">
+                                        <li>• <em>Nyaya Sutras</em> of Gautama (with Vatsyayana Bhashya)</li>
+                                        <li>• <em>Vaisheshika Sutras</em> of Kanada</li>
+                                        <li>• <em>Nyaya Vartika</em> of Uddyotakara</li>
+                                        <li>• <em>Tarka Samgraha</em> of Annambhatta</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-ruby-light mb-2">Samkhya & Yoga</h3>
+                                    <ul className="space-y-1 text-foreground-muted">
+                                        <li>• <em>Samkhya Karika</em> of Ishvarakrishna</li>
+                                        <li>• <em>Yoga Sutras</em> of Patanjali</li>
+                                        <li>• <em>Vyasa Bhashya</em> (Primary Commentary on Yoga)</li>
+                                        <li>• <em>Tattva-Vaisharadi</em> of Vachaspati Mishra</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-ruby-light mb-2">Purva Mimamsa</h3>
+                                    <ul className="space-y-1 text-foreground-muted">
+                                        <li>• <em>Mimamsa Sutras</em> of Jaimini</li>
+                                        <li>• <em>Shabara Bhashya</em></li>
+                                        <li>• <em>Shloka Vartika</em> of Kumarila Bhatta</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-ruby-light mb-2">Vedanta (Uttara Mimamsa)</h3>
+                                    <ul className="space-y-1 text-foreground-muted">
+                                        <li>• <em>The Principal Upanishads</em> (Isha, Kena, Katha, etc.)</li>
+                                        <li>• <em>Brahma Sutras</em> of Badarayana</li>
+                                        <li>• <em>Bhagavad Gita</em> (with Shankara Bhashya)</li>
+                                        <li>• <em>Vivekachudamani</em> (Crest-Jewel of Discrimination)</li>
+                                        <li>• <em>Sri Bhashya</em> of Ramanuja (Vishishtadvaita)</li>
+                                        <li>• <em>Tattvavada</em> texts of Madhvacharya (Dvaita)</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
                 </section>

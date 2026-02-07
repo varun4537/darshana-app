@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Data & Knowledge Base
+lib/data/generated-knowledge.json
+
+# Tool artifacts
+.agent/
+brain/

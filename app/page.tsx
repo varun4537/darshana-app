@@ -23,7 +23,6 @@ const MENU_ITEMS = [
   { label: "Home", href: "/", icon: HomeIcon },
   { label: "Dashboard", href: "/dashboard", icon: Layout },
   { label: "Darshanas", href: "/#schools", icon: Flower2 },
-  { label: "Glossary", href: "/glossary", icon: Book },
   { label: "Source Library", href: "/texts", icon: Library },
   { label: "Meditation Timer", href: "/meditation", icon: Timer },
   { label: "About & Sources", href: "/about", icon: Info },

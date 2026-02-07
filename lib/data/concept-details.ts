@@ -1037,4 +1037,181 @@ export const conceptDetails: Record<string, ConceptDetail> = {
         ],
         contemplation: { prompt: "The Infallible Witness", guidance: "Mistakes happen in thought. But the one who knows 'I made a mistake'—is that one mistaken? No. That knowing is direct and instant. Trust the Witness. It is your connection to Truth.", durationMinutes: 5 }
     },
+
+
+    // ==================== NYAYA (MISSING) ====================
+    hetvabhasa: {
+        id: "hetvabhasa",
+        title: "Hetvabhasa",
+        sanskritTitle: "हेत्वाभास",
+        synthesis: `
+            <p class="mb-4"><strong>Hetvabhasa</strong> means "fallacy of reason." It occurs when a reason (Hetu) appears valid but is actually defective, leading to incorrect inference.</p>
+            <p class="mb-4">Nyaya identifies five types, including *Savyabhichara* (deviating reason) and *Viruddha* (contradictory reason). Recognizing these fallacies is training the mind to spot error in its own thinking.</p>
+            <p>It is not just about logic chop; it is about purification of the intellect so it can reflect Truth without distortion.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-2-4", text: "Nyaya Sutras", reference: "1.2.4", sanskrit: "सव्यभिचारविरुद्धप्रकरणसमसाध्यसमकालातीता हेत्वाभासाः", translation: "The fallacies are the inconclusive, the contradictory, the equivalent to the question, the unproved, and the mistimed." }
+        ],
+        contemplation: { prompt: "Spot the Error", guidance: "Recall a recent 'reason' you gave for an emotion. 'I am angry because he shouted.' Is that true? Or is the anger from *your* reaction? Spot the fallacy in blaming the external.", durationMinutes: 5 }
+    },
+    tarka: {
+        id: "tarka",
+        title: "Tarka",
+        sanskritTitle: "तर्क",
+        synthesis: `
+            <p class="mb-4"><strong>Tarka</strong> is hypothetical reasoning or "reductio ad absurdum." It is used to clear doubts when direct proof is unavailable.</p>
+            <p class="mb-4">Example: "If there were no fire, there would be no smoke. But there is smoke. Therefore..." It doesn't prove the fire directly but removes the doubt about its absence.</p>
+            <p>Tarka is the "helper" of Pramana. It prepares the ground for knowledge to land.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-40", text: "Nyaya Sutras", reference: "1.1.40", sanskrit: "अविज्ञाते तत्त्वेऽर्थे कारणोपपत्तितस्तत्त्वज्ञानार्थमूहस्तर्कः", translation: "Tarka is reasoning that reveals the true nature of a thing by showing the absurdity of the contrary." }
+        ],
+        contemplation: { prompt: "Unless...", guidance: "When doubt arises (e.g., 'Am I the body?'), use Tarka. 'If I were the body, I would not know it when I sleep. But I exist in sleep. Therefore...'", durationMinutes: 5 }
+    },
+    vada: {
+        id: "vada",
+        title: "Vada",
+        sanskritTitle: "वाद",
+        synthesis: `
+            <p class="mb-4"><strong>Vada</strong> is the honest debate between teacher and student (or two seekers) whose sole purpose is to establish Truth.</p>
+            <p class="mb-4">It is distinguished from *Jalpa* (debate for victory/reputation) and *Vitanda* (debate just to destroy the opponent's view). In Vada, there is no ego involved—only the desire to know.</p>
+            <p>Life is a constant dialogue. Are you engaging in Vada with your own mind, or just arguing to win?</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-2-1", text: "Nyaya Sutras", reference: "1.2.1", sanskrit: "प्रमाणतर्कसाधनोपालम्भः...", translation: "Vada is discourse adopting the side of one of two conflicting views, primarily for truth." }
+        ],
+        contemplation: { prompt: "Truth Over Victory", guidance: "Notice in conversation: Do you want to be 'right' or do you want to 'know'? Drop the shield of righteousness. Let Truth win, even if 'you' lose.", durationMinutes: 5 }
+    },
+    prameya: {
+        id: "prameya",
+        title: "Prameya",
+        sanskritTitle: "प्रमेय",
+        synthesis: `
+            <p class="mb-4"><strong>Prameya</strong> refers to the "objects of valid knowledge"—what is essentially worth knowing. Nyaya lists twelve, starting with *Atman* (Self) and ending with *Apavarga* (Liberation).</p>
+            <p class="mb-4">Others include Body, Senses, Objects, Intellect, Mind, Activity, Faults, Rebirth, Fruit, and Pain. Knowing these twelve correctly leads to freedom.</p>
+            <p>Why these twelve? Because misconceptions about *these specific things* cause suffering. You don't need to know the number of stars to be free; you need to know the Self.</p>
+        `,
+        sources: [
+            { id: "nyaya-sutra-1-1-9", text: "Nyaya Sutras", reference: "1.1.9", sanskrit: "आत्मशरीरेन्द्रियार्थबुद्धिमनःप्रवृत्तिदोषप्रेत्यभावफलदुःखापवर्गास्तु प्रमेयम्", translation: "The objects of knowledge are Self, Body, Senses, Objects, Intellect, Mind, Activity, Faults, Rebirth, Fruit, Pain, and Liberation." }
+        ],
+        contemplation: { prompt: "Worth Knowing", guidance: "Review your day. What 'knowledge' did you consume? News? Gossip? Is it Prameya—liberating knowledge? or just data? Redirect focus to the Knower.", durationMinutes: 5 }
+    },
+
+    // ==================== VAISHESHIKA (MISSING) ====================
+    vishesha: {
+        id: "vishesha",
+        title: "Vishesha",
+        sanskritTitle: "विशेष",
+        synthesis: `
+            <p class="mb-4"><strong>Vishesha</strong> means "Particularity." It is the unique trait that distinguishes eternal substances (like individual atoms/souls) from one another.</p>
+            <p class="mb-4">One earth atom is exactly like another in quality, yet they are distinct entities. What makes them different? Vishesha. It is the ultimate individuality of things.</p>
+            <p>The system is called 'Vaisheshika' because of this emphasis on the unique, irreducible reality of every single part of creation.</p>
+        `,
+        sources: [
+            { id: "vaisheshika-1-2-6", text: "Vaisheshika Sutras", reference: "1.2.6", sanskrit: "अन्यत्रान्त्येभ्यो विशेषेभ्यः", translation: "Distinction is known by the ultimate particularities." }
+        ],
+        contemplation: { prompt: "Absolute Uniqueness", guidance: "Look at two leaves. They are similar (Samanya) but ultimately unique (Vishesha). You too are a Vishesha of the Divine. No one else can take your place.", durationMinutes: 5 }
+    },
+    samanya: {
+        id: "samanya",
+        title: "Samanya",
+        sanskritTitle: "सामान्य",
+        synthesis: `
+            <p class="mb-4"><strong>Samanya</strong> is "Generality" or "Universal." It is the eternal class-essence shared by many individuals (e.g., 'cowness' in all cows).</p>
+            <p class="mb-4">It is real, eternal, and inheres in the individuals. It allows us to recognize things and use language. Without Samanya, every experience would be disconnected chaos.</p>
+            <p>The highest Samanya is *Satta* (Existence)—the quality of 'being' shared by everything that is.</p>
+        `,
+        sources: [
+            { id: "vaisheshika-1-2-3", text: "Vaisheshika Sutras", reference: "1.2.3", sanskrit: "सामान्यं विशेष इति बुद्धypeक्षम्", translation: "Generality and Particularity depend on the mode of cognition." }
+        ],
+        contemplation: { prompt: "Seeing the One in Many", guidance: "Look around. Table, chair, wall. See the 'Is-ness' (Satta) in all of them. They all 'are'. Rest in that common Being that supports all forms.", durationMinutes: 5 }
+    },
+    abhava: {
+        id: "abhava",
+        title: "Abhava",
+        sanskritTitle: "अभाव",
+        synthesis: `
+            <p class="mb-4"><strong>Abhava</strong> is "Non-existence." Vaisheshika treats absence not as nothing, but as a real category of knowledge. To know "the jar is not here" is a valid cognition.</p>
+            <p class="mb-4">There are four types: 1. Previous non-existence (future jar), 2. Destruction (broken jar), 3. Absolute non-existence (hare's horn), 4. Mutual non-existence (jar is not cloth).</p>
+            <p>Value the spaces. The silence between notes makes music; the non-existence of clutter makes a room.</p>
+        `,
+        sources: [
+            { id: "vaisheshika-9-1", text: "Vaisheshika Sutras", reference: "9.1", sanskrit: "क्रियागुणव्यपदेशाभावात् प्रागसत्", translation: "An effect is non-existent before its production." }
+        ],
+        contemplation: { prompt: "The Power of Absence", guidance: "Notice what is NOT here right now. No tiger. No snow. Feel the safety and space created by Abhava. Absence is a presence of its own.", durationMinutes: 5 }
+    },
+
+    // ==================== MIMAMSA (MISSING) ====================
+
+    arthavada: {
+        id: "arthavada",
+        title: "Arthavada",
+        sanskritTitle: "अर्थवाद",
+        synthesis: `
+            <p class="mb-4"><strong>Arthavada</strong> refers to the explanatory or laudatory passages in the Vedas. They don't command action (Vidhi) but encourage it by praising the results or condemning the omission.</p>
+            <p class="mb-4">Example: "He who performs this becomes as strong as a lion." It's not literal biology; it's motivation. Words have power to move the heart, not just inform the head.</p>
+        `,
+        sources: [
+            { id: "mimamsa-1-2-7", text: "Mimamsa Sutras", reference: "1.2.7", sanskrit: "विधिना त्वेकवाक्यत्वात् स्तुत्यर्थेन...", translation: "Being syntactically connected with the injunction, their purpose is praise." }
+        ],
+        contemplation: { prompt: "Self-Praise", guidance: "Speak 'Arthavada' to yourself. 'I am capable involved.' 'This practice brings peace.' Use language to generate enthusiasm (Utsaha) for your path.", durationMinutes: 3 }
+    },
+
+    // ==================== VEDANTA SUB-SCHOOLS (MISSING) ====================
+    "nirguna-brahman": {
+        id: "nirguna-brahman",
+        title: "Nirguna Brahman",
+        sanskritTitle: "निर्गुण ब्रह्म",
+        synthesis: `
+            <p class="mb-4"><strong>Nirguna Brahman</strong> is the Absolute without qualities, attributes, or form. It is the highest reality in Shankara's Advaita Vedanta.</p>
+            <p class="mb-4">Qualities imply limitation (if it's good, it's not bad; if it's here, it's not there). The Infinite must be beyond all dualities, including personality. It is pure Silence—Neti, Neti (Not this, not this).</p>
+        `,
+        sources: [
+            { id: "katha-1-3-15", text: "Katha Upanishad", reference: "1.3.15", sanskrit: "अशब्दमस्पर्शमरूपमव्ययम्", translation: "Soundless, touchless, formless, undecaying... knowing That, one is freed from death." }
+        ],
+        contemplation: { prompt: "The Formless", guidance: "Imagine something with no color, no size, no location, no age. The mind fails. Good. In that failure of the mind, the Reality shines. Rest in the 'Idea-less' awareness.", durationMinutes: 7 }
+    },
+    "jivanmukti": {
+        id: "jivanmukti",
+        title: "Jivanmukti",
+        sanskritTitle: "जीवन्मुक्ति",
+        synthesis: `
+            <p class="mb-4"><strong>Jivanmukti</strong> is "liberation while living." Advaita insists you don't have to die to be free. Since freedom is your nature, it can be claimed *now*.</p>
+            <p class="mb-4">The Jivanmukta acts in the world like a roasted seed—it looks like a seed, but it can no longer sprout into rebirth. Grief and delusion are gone; spontaneous bliss remains.</p>
+        `,
+        sources: [
+            { id: "viveka-426", text: "Vivekachudamani", reference: "426", sanskrit: "जीवन्मुक्तस्य लक्षणम्", translation: "The signs of one liberated in this very life..." }
+        ],
+        contemplation: { prompt: "Free Now", guidance: "What are you waiting for? Enlightenment is not in the future. It is the recognition of what is already here. Drop the 'waiting'. Be the Freedom you seek.", durationMinutes: 5 }
+    },
+
+
+    // ==================== SAMKHYA (More) ====================
+    "tattva-25": {
+        id: "tattva-25",
+        title: "25 Tattvas",
+        sanskritTitle: "पंचविंशति तत्त्व",
+        synthesis: `
+            <p class="mb-4">Samkhya maps the universe into <strong>25 Tattvas</strong> (Principles). It is a periodic table of reality.</p>
+            <p class="mb-4">1. Purusha (Consciousness)<br>2. Prakriti (Nature)<br>3. Mahat (Intellect)<br>4. Ahamkara (Ego)<br>5. Manas (Mind)<br>6-10. Senses (Jnanendriyas)<br>11-15. Actions (Karmendriyas)<br>16-20. Subtle Elements (Tanmatras)<br>21-25. Gross Elements (Mahabhutas).</p>
+            <p>Everything you experience fits in here. Liberation is isolating #1 from the other 24.</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-22", text: "Samkhya Karika", reference: "22", sanskrit: "प्रकृतेर्महांस्ततोऽहंकारः...", translation: "From Prakriti comes Mahat, thence Ahamkara..." }
+        ],
+        contemplation: { prompt: "Map Your Experience", guidance: "Hear a sound? That's Ear (Sense) grasping Sound (Tanmatra). Identify the Tattva. Keep backing up until you find the Witness (Purusha) watching the map.", durationMinutes: 5 }
+    },
+    "satkaryavada": {
+        id: "satkaryavada",
+        title: "Satkaryavada",
+        sanskritTitle: "सत्कार्यवाद",
+        synthesis: `
+            <p class="mb-4"><strong>Satkaryavada</strong> is the theory that "the effect pre-exists in the cause." Curd is hidden in milk; oil is hidden in the seed. Nothing new is ever created; it is only manifested.</p>
+            <p class="mb-4">Therefore, this vast universe must have been hidden in its cause (Prakriti) before the Big Bang. Evolution is just the unpacking of what was already there.</p>
+        `,
+        sources: [
+            { id: "samkhya-karika-9", text: "Samkhya Karika", reference: "9", sanskrit: "असदकरणादुपादानग्रहणात्...", translation: "The effect exists (before production) because what is non-existent cannot be produced." }
+        ],
+        contemplation: { prompt: "Potentiality", guidance: "Look at an acorn (or seed). The whole oak tree is somehow 'there' in potential. Look at your life. What is waiting to sprout? It's already in you. Water it.", durationMinutes: 5 }
+    }
 };
