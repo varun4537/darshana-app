@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Play, Pause, RotateCcw } from "lucide-react";
+import { Play, Pause, RotateCcw, Trees } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserProgress } from "@/lib/context/user-progress";
 
@@ -11,12 +11,12 @@ interface MeditationTimerProps {
 
 const AMBIENT_SOUNDS = [
     { id: "none", label: "Silence", icon: "🔇" },
-    { id: "om", label: "Om Chant", icon: "🕉️" },
+    { id: "forest", label: "Forest", icon: "🌲" },
 ];
 
 // Reliable ambient sound URLs
 const SOUND_URLS: Record<string, string> = {
-    om: "https://cdn.pixabay.com/audio/2024/09/24/audio_34739178cb.mp3", // Verified working Om chant
+    forest: "https://actions.google.com/sounds/v1/nature/forest_birds.ogg", // Google Action Library
 };
 
 export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) {
@@ -199,20 +199,16 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
                 <div className="flex items-center justify-between">
                     {/* Sound Toggle */}
                     <button
-                        onClick={() => setSelectedSound(selectedSound === "om" ? "none" : "om")}
+                        onClick={() => setSelectedSound(selectedSound === "forest" ? "none" : "forest")}
                         className={cn(
-                            "group p-3 rounded-lg transition-all",
-                            selectedSound === "om" ? "bg-white/10" : "hover:bg-white/5"
+                            "p-3 rounded-2xl transition-all duration-300",
+                            selectedSound === "forest"
+                                ? "bg-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
+                                : "text-foreground-muted/60 hover:text-foreground hover:bg-white/5"
                         )}
-                        aria-label="Toggle Sound"
+                        title="Forest Ambience"
                     >
-                        {/* Custom Purple Square Icon for Om */}
-                        <div className={cn(
-                            "w-8 h-8 rounded flex items-center justify-center transition-colors",
-                            selectedSound === "om" ? "bg-[#8B5CF6] text-white" : "bg-white/10 text-foreground-muted group-hover:text-foreground"
-                        )}>
-                            <span className="text-lg font-serif leading-none pb-1">🕉️</span>
-                        </div>
+                        <Trees className="w-6 h-6" />
                     </button>
 
                     {/* Play/Pause (Large) */}
