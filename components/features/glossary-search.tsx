@@ -53,53 +53,58 @@ export function GlossarySearch() {
 
     return (
         <>
-            {/* Search Bar */}
-            <div className="relative mb-4">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground-muted" />
-                <input
-                    type="text"
-                    placeholder="Search terms..."
-                    className="w-full bg-surface border border-ruby/20 rounded-2xl py-3 pl-12 pr-4 text-foreground focus:outline-none focus:border-ruby-light transition-colors"
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setActiveLetter(null); // clear letter filter when typing
-                    }}
-                />
-            </div>
+            {/* ── Sticky search + A–Z filter ──────────────────────────────────────
+                top-[73px] accounts for the glossary page's sticky nav bar height.
+                -mx-4 px-4 bleeds to the edge of the max-w-md container.         */}
+            <div className="sticky top-[73px] z-40 bg-background/90 backdrop-blur-md pb-3 -mx-4 px-4 pt-2 border-b border-ruby/10 mb-4">
+                {/* Search Bar */}
+                <div className="relative mb-3">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground-muted" />
+                    <input
+                        type="text"
+                        placeholder="Search terms..."
+                        className="w-full bg-surface border border-ruby/20 rounded-2xl py-3 pl-12 pr-4 text-foreground focus:outline-none focus:border-ruby-light transition-colors"
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setActiveLetter(null); // clear letter filter when typing
+                        }}
+                    />
+                </div>
 
-            {/* A–Z Letter Filter */}
-            <div className="flex flex-wrap gap-1 mb-6">
-                <button
-                    onClick={() => { setActiveLetter(null); setSearchTerm(""); }}
-                    className={cn(
-                        "px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors",
-                        activeLetter === null && searchTerm === ""
-                            ? "bg-ruby text-foreground"
-                            : "bg-surface text-foreground-muted hover:bg-ruby/20 hover:text-foreground"
-                    )}
-                >
-                    All
-                </button>
-                {ALPHABET.map(letter => {
-                    const available = availableLetters.has(letter);
-                    return (
-                        <button
-                            key={letter}
-                            onClick={() => available && handleLetterClick(letter)}
-                            disabled={!available}
-                            className={cn(
-                                "w-7 h-7 rounded-lg text-[11px] font-bold uppercase transition-colors",
-                                !available && "opacity-20 cursor-not-allowed",
-                                available && activeLetter === letter
-                                    ? "bg-ruby text-foreground"
-                                    : available && "bg-surface text-foreground-muted hover:bg-ruby/20 hover:text-foreground"
-                            )}
-                        >
-                            {letter}
-                        </button>
-                    );
-                })}
+                {/* A–Z Letter Filter — 36×36px minimum touch target; unavailable letters hidden */}
+                <div className="flex flex-wrap gap-1">
+                    <button
+                        onClick={() => { setActiveLetter(null); setSearchTerm(""); }}
+                        className={cn(
+                            "px-2.5 min-h-[36px] rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors",
+                            activeLetter === null && searchTerm === ""
+                                ? "bg-ruby text-foreground"
+                                : "bg-surface text-foreground-muted hover:bg-ruby/20 hover:text-foreground"
+                        )}
+                    >
+                        All
+                    </button>
+                    {ALPHABET.map(letter => {
+                        // Completely hide letters that have no matching terms
+                        if (!availableLetters.has(letter)) return null;
+
+                        return (
+                            <button
+                                key={letter}
+                                onClick={() => handleLetterClick(letter)}
+                                className={cn(
+                                    "min-w-[36px] min-h-[36px] rounded-lg text-[11px] font-bold uppercase transition-colors flex items-center justify-center",
+                                    activeLetter === letter
+                                        ? "bg-ruby text-foreground"
+                                        : "bg-surface text-foreground-muted hover:bg-ruby/20 hover:text-foreground"
+                                )}
+                            >
+                                {letter}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Result count */}
@@ -113,7 +118,7 @@ export function GlossarySearch() {
             <div className="space-y-4">
                 {filteredTerms.length > 0 ? (
                     filteredTerms.map((term) => (
-                        <Card key={term.id} className="border-ruby/10 group">
+                        <Card key={term.id} className="p-5 border-ruby/10 group">
                             <CardHeader className="flex flex-row justify-between items-start mb-2">
                                 <div className="flex flex-col">
                                     <CardTitle className="text-xl text-nectar group-hover:text-nectar-light transition-colors">

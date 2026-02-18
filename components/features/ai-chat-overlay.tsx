@@ -182,11 +182,11 @@ export function AiChatOverlay() {
 
     return (
         <>
-            {/* Floating Action Button */}
+            {/* Floating Action Button — safe-area-aware so it clears the bottom nav on iOS */}
             <button
                 onClick={openChat}
                 className={cn(
-                    "fixed bottom-24 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl transition-all duration-300",
+                    "fixed bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl transition-all duration-300",
                     "bg-ruby text-foreground hover:scale-105 hover:bg-ruby-light",
                     isOpen && "opacity-0 pointer-events-none"
                 )}
@@ -261,11 +261,20 @@ export function AiChatOverlay() {
                         </div>
                     )}
 
+                    {/* Diya flame flicker typing indicator */}
                     {isTyping && (
-                        <div className="mr-auto bg-surface text-foreground rounded-2xl rounded-tl-none border border-ruby/10 p-3 flex items-center gap-2">
-                            <span className="w-2 h-2 bg-foreground-muted rounded-full animate-bounce" />
-                            <span className="w-2 h-2 bg-foreground-muted rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                            <span className="w-2 h-2 bg-foreground-muted rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                        <div className="mr-auto bg-surface text-foreground rounded-2xl rounded-tl-none border border-ruby/10 p-3 flex items-end gap-1 h-9">
+                            {[0, 1, 2].map((i) => (
+                                <div
+                                    key={i}
+                                    className="w-1.5 bg-nectar rounded-full"
+                                    style={{
+                                        height: "16px",
+                                        transformOrigin: "bottom",
+                                        animation: `flameFlicker 0.9s ease-in-out ${i * 0.15}s infinite`,
+                                    }}
+                                />
+                            ))}
                         </div>
                     )}
                     <div ref={messagesEndRef} />

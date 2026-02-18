@@ -5,24 +5,28 @@ import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { LogIn, LogOut, Flower2, ShieldCheck, Flame, Infinity as InfinityIcon, AlertCircle } from "lucide-react";
+import { LogIn, LogOut, Flower2, ShieldCheck, Flame, Home as HomeIcon, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { MandalaLoader } from "@/components/ui/mandala-loader";
 
 export default function LoginPage() {
     const [user, loading] = useAuthState(auth);
     const [isSigningIn, setIsSigningIn] = useState(false);
     const [signInError, setSignInError] = useState<string | null>(null);
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const handleSignIn = async () => {
         setIsSigningIn(true);
         setSignInError(null);
         try {
             await signInWithPopup(auth, googleProvider);
-            router.push("/dashboard");
+            // Honour ?next= param so locked nav items redirect back after sign-in
+            const next = searchParams.get("next");
+            router.push(next && next.startsWith("/") ? next : "/dashboard");
         } catch (err) {
             if (err instanceof FirebaseError) {
                 // Map common Firebase auth error codes to friendly messages
@@ -87,7 +91,7 @@ export default function LoginPage() {
                                 exit={{ opacity: 0 }}
                                 className="py-12 flex flex-col items-center gap-4"
                             >
-                                <div className="w-10 h-10 border-4 border-ruby/20 border-t-ruby rounded-full animate-spin" />
+                                <MandalaLoader />
                                 <p className="text-foreground-muted animate-pulse">Connecting to Akasha...</p>
                             </motion.div>
                         ) : user ? (
@@ -127,8 +131,8 @@ export default function LoginPage() {
                                         href="/"
                                         className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-surface/50 border border-white/5 hover:bg-surface/80 transition-all text-center group"
                                     >
-                                        <InfinityIcon className="w-6 h-6 text-nectar shadow-glow group-hover:scale-110 transition-transform" />
-                                        <span className="text-xs font-bold uppercase tracking-tighter">Explore</span>
+                                        <HomeIcon className="w-6 h-6 text-nectar shadow-glow group-hover:scale-110 transition-transform" />
+                                        <span className="text-xs font-bold uppercase tracking-tighter">Browse Schools</span>
                                     </Link>
                                 </div>
 
@@ -199,12 +203,7 @@ export default function LoginPage() {
                     href="/"
                     className="mt-12 flex items-center justify-center gap-2 text-foreground-muted hover:text-ruby-light transition-colors group"
                 >
-                    <motion.span
-                        animate={{ x: [0, -4, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.5 }}
-                    >
-                        ←
-                    </motion.span>
+                    <span className="group-hover:-translate-x-1 transition-transform duration-200">←</span>
                     <span className="text-sm font-medium">Return to Home</span>
                 </Link>
             </motion.div>

@@ -154,6 +154,8 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
                 <div
                     className={cn(
                         "w-48 h-48 md:w-64 md:h-64 rounded-full blur-[60px] transition-all duration-[4000ms] ease-in-out mix-blend-screen",
+                        // Respect prefers-reduced-motion: freeze the orb at a neutral state
+                        "motion-reduce:transition-none motion-reduce:!opacity-40 motion-reduce:!scale-100",
                         isActive && (breathState === "Inhale" || breathState === "Hold")
                             ? "bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 opacity-90 scale-125"
                             : isActive

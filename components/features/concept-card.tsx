@@ -211,28 +211,26 @@ export function ConceptCard({
                     <span className="max-w-[100px] truncate">{darshanaTitle}</span>
                 </Link>
 
-                {/* Dot indicator row */}
+                {/* Dot indicator strip — sole position indicator in the header.
+                    For > 12 concepts the dots collapse to a compact "X / Y" text counter. */}
                 <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(totalConcepts, 12) }).map((_, i) => (
-                        <div
-                            key={i}
-                            className={cn(
-                                "rounded-full transition-all duration-300",
-                                i === conceptIndex
-                                    ? "w-4 h-1.5 bg-nectar"
-                                    : "w-1.5 h-1.5 bg-foreground-subtle/40"
-                            )}
-                        />
-                    ))}
-                    {totalConcepts > 12 && (
-                        <span className="text-[10px] text-foreground-subtle ml-1">
-                            {conceptIndex + 1}/{totalConcepts}
+                    {totalConcepts <= 12 ? (
+                        Array.from({ length: totalConcepts }).map((_, i) => (
+                            <div
+                                key={i}
+                                className={cn(
+                                    "rounded-full transition-all duration-300",
+                                    i === conceptIndex
+                                        ? "w-4 h-1.5 bg-nectar"
+                                        : "w-1.5 h-1.5 bg-foreground-subtle/40"
+                                )}
+                            />
+                        ))
+                    ) : (
+                        <span className="text-[11px] text-foreground-subtle font-medium">
+                            {conceptIndex + 1} / {totalConcepts}
                         </span>
                     )}
-                </div>
-
-                <div className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-                    {conceptIndex + 1} / {totalConcepts}
                 </div>
             </header>
 
@@ -320,7 +318,8 @@ export function ConceptCard({
 
                         {/* ── Card: Synthesis ─────────────────────── */}
                         <section className="animate-fade-in space-y-3">
-                            <h2 className="text-xs font-bold uppercase tracking-widest text-foreground-subtle px-1">
+                            <h2 className="text-sm font-bold uppercase tracking-wider text-foreground-muted px-1 flex items-center gap-2">
+                                <span className="w-4 h-px bg-ruby/40" />
                                 Overview
                             </h2>
                             <div
@@ -329,11 +328,14 @@ export function ConceptCard({
                             />
                         </section>
 
+                        {/* Kolam section divider — between Overview and Sources */}
+                        <div className="kolam-divider" />
+
                         {/* ── Card: Authenticated Sources ─────────── */}
                         <section className="space-y-3">
                             <div className="flex items-center gap-2 text-foreground-muted">
                                 <BookOpen className="w-4 h-4" />
-                                <h2 className="text-xs font-bold uppercase tracking-widest text-foreground-subtle">
+                                <h2 className="text-sm font-bold uppercase tracking-wider text-foreground-muted">
                                     Authenticated Sources
                                 </h2>
                                 <span className="ml-auto text-[10px] font-bold text-foreground-subtle">
@@ -358,7 +360,8 @@ export function ConceptCard({
 
                         {/* ── Card: Contemplation ─────────────────── */}
                         <section className="space-y-3">
-                            <h2 className="text-xs font-bold uppercase tracking-widest text-foreground-subtle px-1">
+                            <h2 className="text-sm font-bold uppercase tracking-wider text-foreground-muted px-1 flex items-center gap-2">
+                                <span className="w-4 h-px bg-ruby/40" />
                                 Contemplation
                             </h2>
 

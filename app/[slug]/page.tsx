@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users } from "lucide-react";
+import { ArrowLeft, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, BookOpen } from "lucide-react";
 import type { LucideProps } from "lucide-react";
 import { darshanas, getVedantaSubSchools } from "@/lib/data/content";
 import { Card, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
 import { ConceptListProgress, ConceptCompletedCheck } from "@/components/features/concept-progress";
 import { cn } from "@/lib/utils";
+import { AppDrawer } from "@/components/ui/app-drawer";
 
 const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
     'scale': Scale,
@@ -47,14 +48,19 @@ export default async function DarshanaPage({
 
     return (
         <div className="min-h-screen font-sans bg-background">
-            {/* Header */}
-            <header className={cn("relative pt-12 pb-20 px-6 text-foreground", bgGradient)}>
-                <Link
-                    href="/"
-                    className="absolute top-6 left-6 p-2 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/30 transition-colors"
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                </Link>
+            {/* Header — sticky so back/menu are always reachable on long schools */}
+            <header className={cn("relative pt-4 pb-20 px-6 text-foreground", bgGradient)}>
+                {/* Top bar: back + menu */}
+                <div className="flex items-center justify-between mb-8">
+                    <Link
+                        href="/"
+                        className="flex items-center gap-2 py-2 px-3 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/30 transition-colors text-sm font-medium"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        <span>All Schools</span>
+                    </Link>
+                    <AppDrawer />
+                </div>
 
                 <div className="max-w-md mx-auto relative z-10 text-center space-y-4">
                     <div className="opacity-80 font-devanagari text-2xl mb-2">{darshana.sanskritTitle}</div>
@@ -102,6 +108,25 @@ export default async function DarshanaPage({
                             );
                         })}
                     </div>
+                ) : darshana.concepts.length === 0 ? (
+                    // Empty state — school exists in data but has no concepts yet
+                    <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                        <div className="w-16 h-16 rounded-2xl bg-ruby/10 flex items-center justify-center text-ruby-light mb-2">
+                            <BookOpen className="w-8 h-8" />
+                        </div>
+                        <h2 className="text-xl font-serif font-bold text-foreground">Content Coming Soon</h2>
+                        <p className="text-sm text-foreground-muted max-w-xs leading-relaxed">
+                            We are carefully sourcing and verifying texts for {darshana.title}.
+                            Check back soon — authentic wisdom takes time.
+                        </p>
+                        <Link
+                            href="/"
+                            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ruby/10 border border-ruby/30 text-ruby-light text-sm font-medium hover:bg-ruby/20 transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Explore other schools
+                        </Link>
+                    </div>
                 ) : (
                     // Concept list (all other schools)
                     darshana.concepts.map((concept, index) => {
@@ -118,8 +143,8 @@ export default async function DarshanaPage({
                                         {/* Completed checkmark */}
                                         <ConceptCompletedCheck conceptId={concept.id} />
 
-                                        {/* Watermark number */}
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[60px] font-bold text-foreground/[0.08] leading-none select-none pointer-events-none">
+                                        {/* Watermark number — lowered to 0.04 so it doesn't compete with content */}
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[60px] font-bold text-foreground/[0.04] leading-none select-none pointer-events-none">
                                             {conceptNumber}
                                         </div>
 

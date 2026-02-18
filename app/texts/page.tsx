@@ -1,6 +1,6 @@
 import { sourceTexts } from "@/lib/data/texts";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { BookOpen, ArrowLeft, ArrowRight } from "lucide-react";
+import { BookOpen, ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 export default function LibraryPage() {
@@ -70,15 +70,16 @@ export default function LibraryPage() {
                                         <ArrowRight className="w-3" />
                                     </Link>
                                 ) : text.url ? (
-                                    /* External text only */
-                                    <Link href={text.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-bold text-ruby-light group-hover:translate-x-1 transition-transform cursor-pointer">
+                                    /* External text — same nectar color as READ; ExternalLink icon signals new tab */
+                                    <Link href={text.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-bold text-nectar hover:opacity-80 transition-opacity cursor-pointer">
                                         BROWSE
-                                        <ArrowRight className="w-3" />
+                                        <ExternalLink className="w-3 h-3" />
                                     </Link>
                                 ) : (
-                                    <div className="flex items-center gap-1 text-xs font-bold text-foreground-muted cursor-not-allowed">
-                                        COMING SOON
-                                    </div>
+                                    /* Coming Soon — pill badge, not a link-area element */
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-foreground-subtle/10 text-foreground-subtle border border-foreground-subtle/20">
+                                        Coming Soon
+                                    </span>
                                 )}
                             </div>
                         </Card>

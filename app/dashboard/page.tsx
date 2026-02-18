@@ -5,7 +5,8 @@ import { STUDY_PLANS } from "@/lib/data/study-plans";
 import { darshanas } from "@/lib/data/content";
 import { StudyPlanCard } from "@/components/features/study-plan-card";
 import { motion } from "framer-motion";
-import { Flame, Layout, Sparkles, LogIn, Clock, Download, CheckCircle2 } from "lucide-react";
+import { Flame, Layout, Sparkles, LogIn, Clock, Download, CheckCircle2, X, ArrowRight } from "lucide-react";
+import { MandalaLoader } from "@/components/ui/mandala-loader";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -66,6 +67,19 @@ function exportProgress(stats: ReturnType<typeof useUserProgress>["stats"]) {
     URL.revokeObjectURL(url);
 }
 
+/** Return a 7-element boolean array (oldest → today) — true if user studied that day */
+function getWeekActivity(recentlyStudied: Array<{ viewedAt: string }>): boolean[] {
+    const today = new Date();
+    return Array.from({ length: 7 }, (_, i) => {
+        const day = new Date(today);
+        day.setDate(today.getDate() - (6 - i));
+        const dayStr = day.toDateString();
+        return recentlyStudied.some(e => new Date(e.viewedAt).toDateString() === dayStr);
+    });
+}
+
+const WEEK_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
+
 export default function DashboardPage() {
     const { stats, startPlan } = useUserProgress();
     const [user, loading] = useAuthState(auth);
@@ -116,8 +130,9 @@ export default function DashboardPage() {
     // ── Auth guard ──────────────────────────────────────────────────────────
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
-                <div className="w-10 h-10 border-4 border-ruby/20 border-t-ruby rounded-full animate-spin" />
+            <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
+                <MandalaLoader className="w-14 h-14" />
+                <p className="text-foreground-muted text-sm animate-pulse">Loading your path…</p>
             </div>
         );
     }
@@ -134,8 +149,9 @@ export default function DashboardPage() {
                         Your study progress is saved securely to your account.
                     </p>
                 </div>
+                {/* ?next=/dashboard so login redirects back here after sign-in */}
                 <Link
-                    href="/login"
+                    href="/login?next=/dashboard"
                     className="flex items-center gap-2 bg-ruby text-foreground px-6 py-3 rounded-full font-medium hover:bg-ruby-light transition-colors"
                 >
                     <LogIn className="w-4 h-4" />
@@ -156,8 +172,8 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -16 }}
                     className={`fixed top-4 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-3 px-5 py-3 rounded-2xl shadow-xl border text-sm font-medium max-w-sm w-full mx-4 ${upgradeToast === "success"
-                            ? "bg-emerald-950 border-emerald-500/40 text-emerald-300"
-                            : "bg-surface border-ruby/30 text-foreground-muted"
+                        ? "bg-emerald-950 border-emerald-500/40 text-emerald-300"
+                        : "bg-surface border-ruby/30 text-foreground-muted"
                         }`}
                 >
                     {upgradeToast === "success" ? (
@@ -175,10 +191,10 @@ export default function DashboardPage() {
                     )}
                     <button
                         onClick={() => setUpgradeToast(null)}
-                        className="ml-auto text-foreground-subtle hover:text-foreground transition-colors text-lg leading-none"
+                        className="ml-auto text-foreground-subtle hover:text-foreground transition-colors p-0.5"
                         aria-label="Dismiss"
                     >
-                        ×
+                        <X className="w-3.5 h-3.5" />
                     </button>
                 </motion.div>
             )}
@@ -213,37 +229,103 @@ export default function DashboardPage() {
                     </motion.div>
                 </div>
 
-                {/* Stats Overview */}
+                {/* Stats Overview — Streak card spans 2 cols for hero treatment */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-surface p-4 rounded-2xl border border-ruby/10 flex flex-col gap-1">
-                        <span className="text-xs font-bold uppercase tracking-widest text-foreground-muted">Streak</span>
-                        <div className="flex items-center gap-2">
-                            <Flame className="w-5 h-5 text-orange-500 fill-orange-500" />
-                            <span className="text-2xl font-bold text-foreground">{stats.streakDays} Days</span>
-                        </div>
-                    </div>
+
+                    {/* ── 4.4 Streak hero card ─────────────────────────── */}
+                    {(() => {
+                        const weekActivity = getWeekActivity(stats.recentlyStudied);
+                        return (
+                            <div className="col-span-2 bg-surface rounded-2xl border border-orange-500/20 relative overflow-hidden p-5 flex flex-col gap-3">
+                                {/* Ambient glow */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent pointer-events-none" />
+
+                                <div className="flex items-start justify-between relative z-10">
+                                    <div>
+                                        <span className="text-xs font-bold uppercase tracking-widest text-foreground-muted">Daily Streak</span>
+                                        <div className="flex items-end gap-2 mt-1">
+                                            <Flame className="w-8 h-8 text-orange-500 fill-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]" />
+                                            <span className="text-4xl font-serif font-bold text-foreground leading-none">
+                                                {stats.streakDays}
+                                            </span>
+                                            <span className="text-base text-foreground-muted font-medium pb-1">
+                                                {stats.streakDays === 1 ? "day" : "days"}
+                                            </span>
+                                        </div>
+                                        {stats.streakDays === 0 && (
+                                            <p className="text-[11px] text-foreground-subtle mt-1">Begin today to start your streak</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* 7-day dot grid */}
+                                <div className="relative z-10 flex items-center gap-1.5">
+                                    {WEEK_LABELS.map((label, i) => (
+                                        <div key={i} className="flex flex-col items-center gap-1">
+                                            <div className={`w-6 h-6 rounded-full border transition-colors ${weekActivity[i]
+                                                ? "bg-orange-500 border-orange-400 shadow-[0_0_6px_rgba(249,115,22,0.4)]"
+                                                : "bg-surface border-white/10"
+                                                }`} />
+                                            <span className="text-[9px] font-bold uppercase text-foreground-subtle">{label}</span>
+                                        </div>
+                                    ))}
+                                    <span className="ml-auto text-[10px] text-foreground-subtle uppercase tracking-wider">Last 7 days</span>
+                                </div>
+                            </div>
+                        );
+                    })()}
+
+                    {/* Meditation */}
                     <div className="bg-surface p-4 rounded-2xl border border-ruby/10 flex flex-col gap-1">
                         <span className="text-xs font-bold uppercase tracking-widest text-foreground-muted">Meditation</span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 mt-1">
                             <Sparkles className="w-5 h-5 text-purple-500" />
                             <span className="text-2xl font-bold text-foreground">{Math.round(stats.totalMeditationMinutes)}m</span>
                         </div>
+                        {stats.totalMeditationMinutes === 0 && (
+                            <p className="text-[10px] text-foreground-subtle">Try your first session</p>
+                        )}
                     </div>
+
+                    {/* Concepts */}
                     <div className="bg-surface p-4 rounded-2xl border border-ruby/10 flex flex-col gap-1">
                         <span className="text-xs font-bold uppercase tracking-widest text-foreground-muted">Concepts</span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 mt-1">
                             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                             <span className="text-2xl font-bold text-foreground">{stats.completedConcepts.length}</span>
                         </div>
+                        {stats.completedConcepts.length === 0 && (
+                            <p className="text-[10px] text-foreground-subtle">Complete your first concept</p>
+                        )}
                     </div>
-                    <div className="bg-surface p-4 rounded-2xl border border-ruby/10 flex flex-col gap-1">
-                        <span className="text-xs font-bold uppercase tracking-widest text-foreground-muted">Sessions</span>
-                        <div className="flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-sky-500" />
-                            <span className="text-2xl font-bold text-foreground">{stats.sessionsCompleted}</span>
-                        </div>
-                    </div>
+
                 </div>
+
+                {/* ── 3.5 Zero-state: no concepts studied yet ───────────── */}
+                {stats.recentlyStudied.length === 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-2xl border border-ruby/20 bg-surface/60 p-8 flex flex-col items-center text-center gap-5 relative overflow-hidden"
+                    >
+                        {/* Decorative glow */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-ruby/5 via-transparent to-nectar/5 pointer-events-none" />
+                        <div className="relative z-10 space-y-2">
+                            <p className="text-4xl">🪷</p>
+                            <h3 className="text-xl font-serif font-bold text-foreground">Begin Your Journey</h3>
+                            <p className="text-sm text-foreground-muted max-w-xs">
+                                You haven&apos;t studied any concepts yet. Choose a Darshana to begin exploring the schools of Indian philosophy.
+                            </p>
+                        </div>
+                        <Link
+                            href="/"
+                            className="relative z-10 inline-flex items-center gap-2 bg-ruby text-foreground px-6 py-3 rounded-full font-medium hover:bg-ruby-light transition-colors text-sm"
+                        >
+                            Browse Darshanas
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </motion.div>
+                )}
 
                 {/* Recently Studied */}
                 {stats.recentlyStudied.length > 0 && (

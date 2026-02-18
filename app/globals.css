@@ -27,9 +27,14 @@
   --color-foreground-muted: #C8C0B0;
   --color-foreground-subtle: #6B6B6B;
 
+  /* Sacred Gold — first-class token for Sanskrit text, verse refs, completed states */
+  --color-sacred-gold: #C9A24D;
+  --color-sacred-gold-light: #D4AF5E;
+  --color-sacred-gold-dark: #A8832A;
+
   /* Legacy aliases for compatibility */
   --color-maroon: var(--color-ruby);
-  --color-gold: #C9A24D;
+  --color-gold: var(--color-sacred-gold);
   --color-parchment: var(--color-background);
   --color-ivory: var(--color-surface);
   --color-stone: var(--color-foreground-muted);
@@ -99,4 +104,96 @@ a:hover {
 ::selection {
   background-color: rgba(133, 46, 71, 0.4);
   color: var(--color-foreground);
+}
+
+/* ─── Focus visible — accessible focus rings ──────────────────── */
+*:focus-visible {
+  outline: 2px solid rgba(133, 46, 71, 0.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Section reveal animation ────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* ─── Mandala loader petals ────────────────────────────────────── */
+@keyframes mandalaPetal {
+
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* ─── Mark-complete ripple (lake-drop metaphor) ────────────────── */
+@keyframes flameFlicker {
+
+  0%,
+  100% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+
+  25% {
+    transform: scaleY(1.35) scaleX(0.85);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scaleY(0.85) scaleX(1.1);
+    opacity: 0.8;
+  }
+
+  75% {
+    transform: scaleY(1.2) scaleX(0.9);
+    opacity: 0.95;
+  }
+}
+
+@keyframes rippleOut {
+  from {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  to {
+    transform: scale(5);
+    opacity: 0;
+  }
+}
+
+/* ─── Kolam / Rangoli section divider ──────────────────────────── */
+.kolam-divider {
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg width='24' height='16' viewBox='0 0 24 16' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='8' r='1.5' fill='%23852E47' opacity='0.3'/%3E%3Ccircle cx='0' cy='8' r='1.5' fill='%23852E47' opacity='0.15'/%3E%3Ccircle cx='24' cy='8' r='1.5' fill='%23852E47' opacity='0.15'/%3E%3Cline x1='0' y1='8' x2='24' y2='8' stroke='%23852E47' stroke-width='0.5' opacity='0.12'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.8;
+}
+
+/* ─── Sanskrit verse utility ───────────────────────────────────── */
+.verse-sanskrit {
+  font-family: var(--font-devanagari);
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: var(--color-sacred-gold);
+  letter-spacing: 0.02em;
 }

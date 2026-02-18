@@ -13,8 +13,7 @@ export function Card({ children, className, ...props }: CardProps) {
                 // Dark mode card style
                 "bg-surface rounded-2xl border border-ruby/20",
                 "shadow-card hover:shadow-glow hover:-translate-y-0.5",
-                // Default padding
-                "p-5",
+                // No default padding — consumers manage padding via CardContent or className
                 className
             )}
             {...props}

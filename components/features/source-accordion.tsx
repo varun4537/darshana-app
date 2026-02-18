@@ -67,7 +67,10 @@ export function SourceAccordion({ source }: { source: SourceCitation }) {
                             ) : (
                                 source.text
                             )}{" "}
-                            <span className="text-foreground-subtle font-mono text-xs">{source.reference}</span>
+                            {/* Sacred-gold bordered badge for shloka references (e.g. BG 2.47) */}
+                            <span className="font-mono text-[11px] font-bold border border-sacred-gold/40 text-sacred-gold px-1.5 py-0.5 rounded ml-1">
+                                {source.reference}
+                            </span>
                         </div>
                         {/* Preview line when collapsed */}
                         {!isOpen && (
