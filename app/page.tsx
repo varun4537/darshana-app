@@ -1,14 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
+import type { LucideProps } from "lucide-react";
 import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, Menu, X, Home as HomeIcon, Book, Library, Timer, LogIn, Info, Layout } from "lucide-react";
 import Link from "next/link";
-import { darshanas, getMainSchools } from "@/lib/data/content";
+import { darshanas, getMainSchools, getVedantaSubSchools } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ICON_MAP: Record<string, any> = {
+/**
+ * Schools whose content is fully authenticated (5+ sources per concept).
+ * Others show an "Early Access" badge indicating content is still being enriched.
+ */
+const COMPLETE_SCHOOLS = new Set(["advaita", "yoga"]);
+
+const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
   'scale': Scale,
   'atom': Atom,
   'layers': Layers,
@@ -31,7 +38,11 @@ const MENU_ITEMS = [
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const mainDarshanas = getMainSchools();
+  const mainDarshanas = getMainSchools().filter(d => d.concepts.length > 0 || d.slug === 'vedanta');
+
+  // Calculate total Vedanta concepts
+  const vedantaSubSchools = getVedantaSubSchools();
+  const totalVedantaConcepts = vedantaSubSchools.reduce((acc, s) => acc + s.concepts.length, 0);
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
@@ -161,6 +172,7 @@ export default function Home() {
                     darshana.accentColor === "moss" && "group-hover:bg-moss group-hover:text-moss-foreground",
                     darshana.accentColor === "sky" && "group-hover:bg-sky-500 group-hover:text-sky-950",
                     darshana.accentColor === "emerald" && "group-hover:bg-emerald-500 group-hover:text-emerald-950",
+                    isVedanta && "group-hover:bg-indigo-500 group-hover:text-indigo-950"
                   )}>
                     <Icon className="w-6 h-6" />
                   </div>
@@ -172,9 +184,16 @@ export default function Home() {
                     {darshana.description}
                   </CardDescription>
 
+                  {/* Early Access badge for schools still being source-enriched */}
+                  {!isVedanta && !COMPLETE_SCHOOLS.has(darshana.slug) && (
+                    <span className="inline-block mb-2 px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest bg-nectar/15 text-nectar border border-nectar/30">
+                      Early Access
+                    </span>
+                  )}
+
                   <div className="pt-3 border-t border-foreground-subtle/10 flex justify-between items-center px-4">
                     <span className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wide">
-                      {darshana.concepts.length} Concepts
+                      {isVedanta ? `${totalVedantaConcepts} Concepts` : `${darshana.concepts.length} Concepts`}
                     </span>
                     {darshana.parentSchool && (
                       <span className="text-[9px] uppercase tracking-widest text-foreground-muted/50">

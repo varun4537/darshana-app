@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { chatWithGemini } from "@/lib/gemini";
 import { useChat } from "@/lib/chat-context";
 
+const MAX_INPUT_LENGTH = 2000;
+
 type Message = {
     id: string;
     role: 'user' | 'assistant';
@@ -16,7 +18,6 @@ type Message = {
 const MessageContent = ({ text }: { text: string }) => {
     const [isSourcesOpen, setIsSourcesOpen] = React.useState(false);
 
-    // Parse text and extract sources
     const { parts, sources } = React.useMemo(() => {
         const sourceRegex = /\[([\w\s.-]+?\.pdf)\]/g;
         const matches = [...text.matchAll(sourceRegex)];
@@ -31,19 +32,16 @@ const MessageContent = ({ text }: { text: string }) => {
             const [fullMatch, sourceName] = match;
             const index = match.index!;
 
-            // Add text before match
             if (index > lastIndex) {
                 parts.push(text.substring(lastIndex, index));
             }
 
-            // Get or add source index
             let sourceIndex = uniqueSources.indexOf(sourceName);
             if (sourceIndex === -1) {
                 uniqueSources.push(sourceName);
                 sourceIndex = uniqueSources.length - 1;
             }
 
-            // Add citation marker
             parts.push(
                 <sup
                     key={index}
@@ -61,7 +59,6 @@ const MessageContent = ({ text }: { text: string }) => {
             lastIndex = index + fullMatch.length;
         });
 
-        // Add remaining text
         if (lastIndex < text.length) {
             parts.push(text.substring(lastIndex));
         }
@@ -69,16 +66,13 @@ const MessageContent = ({ text }: { text: string }) => {
         return { parts, sources: uniqueSources };
     }, [text]);
 
-    // If no sources found, just render text
     if (sources.length === 0) {
         return <p className="whitespace-pre-wrap">{text}</p>;
     }
 
     return (
         <div>
-            <p className="whitespace-pre-wrap">
-                {parts}
-            </p>
+            <p className="whitespace-pre-wrap">{parts}</p>
             <div className="mt-2 pt-2 border-t border-ruby/10">
                 <button
                     onClick={() => setIsSourcesOpen(!isSourcesOpen)}
@@ -126,15 +120,30 @@ export function AiChatOverlay() {
     }, [messages]);
 
     const handleSend = async (messageText?: string) => {
-        const textToSend = messageText || input;
-        if (!textToSend.trim() || isTyping) return;
+        const textToSend = (messageText ?? input).trim();
+        if (!textToSend || isTyping) return;
 
-        const userMsg: Message = { id: Date.now().toString(), role: 'user', text: textToSend };
+        // Client-side length guard (server also enforces this)
+        if (textToSend.length > MAX_INPUT_LENGTH) {
+            setMessages(prev => [...prev, {
+                id: crypto.randomUUID(),
+                role: 'assistant',
+                text: `Message too long (${textToSend.length}/${MAX_INPUT_LENGTH} chars). Please shorten it.`,
+                error: true,
+            }]);
+            return;
+        }
+
+        const userMsg: Message = {
+            id: crypto.randomUUID(),
+            role: 'user',
+            text: textToSend,
+        };
         setMessages(prev => [...prev, userMsg]);
         setInput("");
         setIsTyping(true);
 
-        // Prepare conversation history (excluding the welcome message)
+        // Prepare conversation history (excluding the welcome message and errors)
         const history = messages
             .filter(m => m.id !== 'welcome' && !m.error)
             .map(m => ({ role: m.role, text: m.text }));
@@ -144,33 +153,36 @@ export function AiChatOverlay() {
 
             if (result.error) {
                 setMessages(prev => [...prev, {
-                    id: (Date.now() + 1).toString(),
+                    id: crypto.randomUUID(),
                     role: 'assistant' as const,
-                    text: result.error || 'Unknown error',
-                    error: true
+                    text: result.error ?? 'Unknown error',
+                    error: true,
                 }]);
             } else {
                 setMessages(prev => [...prev, {
-                    id: (Date.now() + 1).toString(),
+                    id: crypto.randomUUID(),
                     role: 'assistant',
-                    text: result.text
+                    text: result.text,
                 }]);
             }
         } catch {
             setMessages(prev => [...prev, {
-                id: (Date.now() + 1).toString(),
+                id: crypto.randomUUID(),
                 role: 'assistant',
                 text: 'An unexpected error occurred. Please try again.',
-                error: true
+                error: true,
             }]);
         } finally {
             setIsTyping(false);
         }
     };
 
+    const charsRemaining = MAX_INPUT_LENGTH - input.length;
+    const isNearLimit = charsRemaining < 200;
+
     return (
         <>
-            {/* Floating Action Button - Moved up to avoid covering bottom nav profile */}
+            {/* Floating Action Button */}
             <button
                 onClick={openChat}
                 className={cn(
@@ -183,7 +195,7 @@ export function AiChatOverlay() {
                 <span className="font-medium text-sm hidden md:inline">Ask Assistant</span>
             </button>
 
-            {/* Chat Drawer/Overlay */}
+            {/* Chat Drawer */}
             <div
                 className={cn(
                     "fixed inset-y-0 right-0 z-50 w-full md:w-[400px] bg-background shadow-2xl border-l border-ruby/20 transform transition-transform duration-300 ease-in-out flex flex-col",
@@ -199,6 +211,7 @@ export function AiChatOverlay() {
                     <button
                         onClick={closeChat}
                         className="p-2 text-foreground-muted hover:text-foreground hover:bg-ruby/10 rounded-full transition-colors"
+                        aria-label="Close chat"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -228,7 +241,7 @@ export function AiChatOverlay() {
                         </div>
                     ))}
 
-                    {/* Sample Questions - Only show when just the welcome message exists */}
+                    {/* Sample questions — only shown before any user messages */}
                     {messages.length === 1 && (
                         <div className="grid grid-cols-1 gap-2 mt-4 px-2">
                             {[
@@ -242,7 +255,7 @@ export function AiChatOverlay() {
                                     onClick={() => handleSend(question)}
                                     className="text-left text-xs p-3 rounded-xl bg-surface/40 hover:bg-surface border border-ruby/5 hover:border-ruby/20 transition-all text-foreground-muted hover:text-foreground"
                                 >
-                                    "{question}"
+                                    &ldquo;{question}&rdquo;
                                 </button>
                             ))}
                         </div>
@@ -269,6 +282,7 @@ export function AiChatOverlay() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask about Vedanta or Yoga..."
+                            maxLength={MAX_INPUT_LENGTH}
                             className="flex-1 bg-transparent px-3 py-1 text-sm outline-none placeholder:text-foreground-subtle text-foreground"
                         />
                         <button
@@ -279,13 +293,21 @@ export function AiChatOverlay() {
                             <Send className="w-4 h-4" />
                         </button>
                     </form>
-                    <div className="text-center mt-2">
+                    <div className="flex items-center justify-between mt-2">
                         <span className="text-[10px] text-foreground-subtle">Powered by Gemini • Grounded in authentic texts</span>
+                        {isNearLimit && (
+                            <span className={cn(
+                                "text-[10px] font-medium",
+                                charsRemaining < 50 ? "text-red-400" : "text-foreground-muted"
+                            )}>
+                                {charsRemaining} left
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
 
-            {/* Backdrop for mobile */}
+            {/* Mobile backdrop */}
             {isOpen && (
                 <div
                     onClick={closeChat}

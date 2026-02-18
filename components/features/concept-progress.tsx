@@ -1,7 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useProgress } from "@/lib/progress-context";
+import { useUserProgress } from "@/lib/context/user-progress";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
@@ -10,9 +10,9 @@ type ConceptProgressProps = {
 };
 
 export function ConceptListProgress({ conceptIds }: ConceptProgressProps) {
-    const { completedConcepts } = useProgress();
+    const { stats } = useUserProgress();
 
-    const completedCount = conceptIds.filter(id => completedConcepts.has(id)).length;
+    const completedCount = conceptIds.filter(id => stats.completedConcepts.includes(id)).length;
     const totalCount = conceptIds.length;
     const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
@@ -34,7 +34,7 @@ type ConceptCheckProps = {
 };
 
 export function ConceptCompletedCheck({ conceptId }: ConceptCheckProps) {
-    const { isCompleted } = useProgress();
+    const { isCompleted } = useUserProgress();
 
     if (!isCompleted(conceptId)) {
         return null;

@@ -60,7 +60,17 @@ export default function LibraryPage() {
                                         </div>
                                     )}
                                 </div>
-                                {text.url ? (
+                                {text.textChapters && text.textChapters.length > 0 ? (
+                                    /* Has inline verse content — link to built-in browser */
+                                    <Link
+                                        href={`/texts/${text.id}`}
+                                        className="flex items-center gap-1 text-xs font-bold text-nectar group-hover:translate-x-1 transition-transform"
+                                    >
+                                        READ
+                                        <ArrowRight className="w-3" />
+                                    </Link>
+                                ) : text.url ? (
+                                    /* External text only */
                                     <Link href={text.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-bold text-ruby-light group-hover:translate-x-1 transition-transform cursor-pointer">
                                         BROWSE
                                         <ArrowRight className="w-3" />

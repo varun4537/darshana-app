@@ -1,11 +1,11 @@
 "use client";
 
 import { Check, Circle } from "lucide-react";
-import { useProgress } from "@/lib/progress-context";
+import { useUserProgress } from "@/lib/context/user-progress";
 import { cn } from "@/lib/utils";
 
 export function MarkCompleteButton({ conceptId }: { conceptId: string }) {
-    const { isCompleted, markCompleted, markIncomplete } = useProgress();
+    const { isCompleted, markCompleted, markIncomplete } = useUserProgress();
     const completed = isCompleted(conceptId);
 
     const handleClick = () => {

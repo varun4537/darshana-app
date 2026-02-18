@@ -3,26 +3,45 @@
 import { useState } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { LogIn, LogOut, Flower2, ShieldCheck, Flame, Infinity as InfinityIcon } from "lucide-react";
+import { LogIn, LogOut, Flower2, ShieldCheck, Flame, Infinity as InfinityIcon, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuthState } from "react-firebase-hooks/auth"; // Note: I'll need to check if this is installed or use standard useEffect
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function LoginPage() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [isSigningIn, setIsSigningIn] = useState(false);
+    const [signInError, setSignInError] = useState<string | null>(null);
     const router = useRouter();
 
     const handleSignIn = async () => {
         setIsSigningIn(true);
+        setSignInError(null);
         try {
             await signInWithPopup(auth, googleProvider);
-            // Success is handled by useAuthState
-        } catch (err: any) {
-            console.error("Sign in error:", err);
-            alert("Failed to sign in. Please check if Google Login is enabled in your Firebase console.");
+            router.push("/dashboard");
+        } catch (err) {
+            if (err instanceof FirebaseError) {
+                // Map common Firebase auth error codes to friendly messages
+                switch (err.code) {
+                    case "auth/popup-closed-by-user":
+                        setSignInError("Sign-in popup was closed. Please try again.");
+                        break;
+                    case "auth/popup-blocked":
+                        setSignInError("Sign-in popup was blocked by your browser. Please allow popups for this site.");
+                        break;
+                    case "auth/network-request-failed":
+                        setSignInError("Network error. Please check your connection and try again.");
+                        break;
+                    default:
+                        setSignInError(`Sign in failed: ${err.message}`);
+                }
+            } else {
+                setSignInError("An unexpected error occurred. Please try again.");
+            }
         } finally {
             setIsSigningIn(false);
         }
@@ -80,6 +99,7 @@ export default function LoginPage() {
                             >
                                 <div className="flex flex-col items-center gap-4">
                                     <div className="relative">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
                                             src={user.photoURL || ""}
                                             alt={user.displayName || "User"}
@@ -132,6 +152,18 @@ export default function LoginPage() {
                                     <CardDescription>Sign in to save your journey and track your study of the Darshanas.</CardDescription>
                                 </div>
 
+                                {/* Inline error display — replaces browser alert() */}
+                                {signInError && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -8 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="flex items-start gap-2 p-3 rounded-xl bg-red-950/50 border border-red-500/30 text-red-400 text-sm"
+                                    >
+                                        <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                                        <span>{signInError}</span>
+                                    </motion.div>
+                                )}
+
                                 <div className="space-y-4 pt-4">
                                     <button
                                         onClick={handleSignIn}
@@ -148,23 +180,20 @@ export default function LoginPage() {
                                                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.24.81-2.6z" fill="#FBBC05" />
                                                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335" />
                                                 </svg>
+                                                <LogIn className="w-0 h-0" />
                                                 Sign in with Google
                                             </>
                                         )}
                                     </button>
 
                                     <p className="text-center text-[10px] text-foreground-muted uppercase tracking-[0.2em] pt-4">
-                                        Your soul's progress is private & secure
+                                        Your soul&apos;s progress is private &amp; secure
                                     </p>
                                 </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </Card>
-
-                <div className="mt-8 text-center text-xs text-foreground-muted/40 font-mono tracking-widest">
-                    SECURE_SPIRITUAL_LINK_ESTABLISHED
-                </div>
 
                 <Link
                     href="/"

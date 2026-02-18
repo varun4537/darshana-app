@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Libre_Baskerville, Noto_Serif_Devanagari } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { BottomNav } from "@/components/ui/bottom-nav";
-import { UserProgressProvider } from "@/lib/context/user-progress";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -11,7 +9,7 @@ const inter = Inter({
 });
 
 const libreBaskerville = Libre_Baskerville({
-  weight: ['400', '700', '400'], // Note: 400 italic is also available but let's stick to basics
+  weight: ['400', '700'],
   variable: "--font-libre",
   subsets: ["latin"],
 });
@@ -22,15 +20,23 @@ const notoSerifDevanagari = Noto_Serif_Devanagari({
   subsets: ["devanagari", "latin"],
 });
 
+// themeColor belongs in the viewport export (metadata.themeColor is deprecated in Next.js 14+)
+export const viewport: Viewport = {
+  themeColor: '#852E47',
+};
+
 export const metadata: Metadata = {
   title: "Darshana | Hindu Philosophy Learning",
   description: "Systematic study of Vedanta and Yoga",
   manifest: "/manifest.json",
-  themeColor: "#852E47",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "Darshana",
+  },
+  // apple-touch-icon for iOS home screen
+  icons: {
+    apple: '/icons/icon-512x512.svg',
   },
 };
 
@@ -44,14 +50,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${libreBaskerville.variable} ${notoSerifDevanagari.variable} antialiased bg-parchment text-ink`}
       >
+        {/* Providers contains BillingProvider > UserProgressProvider > ChatProvider.
+            BottomNav and AiChatOverlay are also rendered inside Providers so they
+            share the same context instances as the page content.
+            The old double-mount of UserProgressProvider here has been removed. */}
         <Providers>
-          <UserProgressProvider>
-            {children}
-            <BottomNav />
-          </UserProgressProvider>
+          {children}
         </Providers>
       </body>
     </html>
   );
 }
-

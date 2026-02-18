@@ -1,0 +1,43 @@
+"use client";
+
+import Link from "next/link";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
+
+export default function SlugError({
+    error,
+    reset,
+}: {
+    error: Error & { digest?: string };
+    reset: () => void;
+}) {
+    return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background text-foreground">
+            <div className="text-center max-w-md space-y-4">
+                <div className="flex justify-center mb-4">
+                    <div className="p-4 rounded-full bg-ruby/10 text-ruby">
+                        <AlertTriangle className="w-8 h-8" />
+                    </div>
+                </div>
+                <h1 className="text-2xl font-serif font-bold">Failed to load school</h1>
+                <p className="text-foreground-muted text-sm leading-relaxed">
+                    {error.message || "This school could not be loaded. Please try again."}
+                </p>
+                <div className="flex gap-4 justify-center mt-6">
+                    <button
+                        onClick={() => reset()}
+                        className="px-6 py-2 bg-ruby text-foreground rounded-full text-sm font-medium hover:bg-ruby-light transition-colors"
+                    >
+                        Try Again
+                    </button>
+                    <Link
+                        href="/"
+                        className="flex items-center gap-2 px-6 py-2 bg-surface border border-ruby/20 text-foreground rounded-full text-sm font-medium hover:bg-surface/80 transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back Home
+                    </Link>
+                </div>
+            </div>
+        </div>
+    );
+}

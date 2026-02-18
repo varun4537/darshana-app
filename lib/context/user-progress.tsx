@@ -1,158 +1,141 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import type { UserStats, PlanProgress, RecentlyStudiedEntry } from '@/types/user';
+import { STORAGE_KEYS } from '@/lib/constants';
+import { auth } from '../firebase';
+import { getUserProgress, saveUserProgress } from '../firebase-db';
+import { darshanas } from '../data/content';
 
-export interface PlanProgress {
-    planId: string;
-    completedModules: string[];
-    startedAt: string;
-    started: boolean;
-}
-
-interface UserStats {
-    totalMeditationMinutes: number;
-    sessionsCompleted: number;
-    streakDays: number;
-    lastMeditationDate: string | null;
-    activePlans: Record<string, PlanProgress>;
-}
+// Re-export PlanProgress for consumers that already import it from here
+export type { PlanProgress };
 
 interface UserProgressContextType {
     stats: UserStats;
-    isPremium: boolean;
     addMeditationSession: (minutes: number) => void;
-    togglePremium: () => void;
     startPlan: (planId: string) => void;
     completeModule: (planId: string, moduleId: string) => void;
+    markCompleted: (conceptId: string) => void;
+    markIncomplete: (conceptId: string) => void;
+    markViewed: (conceptId: string, darshanaSlug: string, title: string) => void;
+    isCompleted: (conceptId: string) => boolean;
+    getProgress: (darshanaSlug: string, totalConcepts: number) => number;
 }
-
-import { auth } from '../firebase';
-import { getUserProgress, saveUserProgress } from '../firebase-db';
 
 const UserProgressContext = createContext<UserProgressContextType | undefined>(undefined);
 
+// Build concept → darshana slug map once at module load time
+const CONCEPT_TO_DARSHANA_MAP: Record<string, string> = Object.values(darshanas)
+    .flatMap(darshana => darshana.concepts.map(concept => [concept.id, darshana.slug] as [string, string]))
+    .reduce<Record<string, string>>((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+const DEFAULT_STATS: UserStats = {
+    totalMeditationMinutes: 0,
+    sessionsCompleted: 0,
+    streakDays: 0,
+    lastMeditationDate: null,
+    activePlans: {},
+    completedConcepts: [],
+    recentlyStudied: [],
+};
+
 export function UserProgressProvider({ children }: { children: React.ReactNode }) {
-    const [stats, setStats] = useState<UserStats>({
-        totalMeditationMinutes: 0,
-        sessionsCompleted: 0,
-        streakDays: 0,
-        lastMeditationDate: null,
-        activePlans: {}
-    });
-    const [isPremium, setIsPremium] = useState(false);
+    const [stats, setStats] = useState<UserStats>(DEFAULT_STATS);
 
-    // Load from local storage on mount
+    // Ref for debouncing Firestore writes — avoids a write on every state tick
+    const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // ─── Hydrate from localStorage on mount, then sync with Firestore ──────
     useEffect(() => {
-        const storedStats = localStorage.getItem('darshana_user_stats');
-        const storedPremium = localStorage.getItem('darshana_is_premium');
-
-        if (storedStats) {
-            // Merge in new fields if they don't exist in stored data (migration)
-            const parsed = JSON.parse(storedStats);
-            setStats({
-                ...parsed,
-                activePlans: parsed.activePlans || {}
-            });
+        const stored = localStorage.getItem(STORAGE_KEYS.USER_STATS);
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored) as Partial<UserStats>;
+                setStats(prev => ({
+                    ...prev,
+                    ...parsed,
+                    activePlans: parsed.activePlans ?? {},
+                    completedConcepts: parsed.completedConcepts ?? [],
+                    recentlyStudied: parsed.recentlyStudied ?? [],
+                }));
+            } catch {
+                // Ignore corrupted localStorage data
+            }
         }
-        if (storedPremium) {
-            setIsPremium(JSON.parse(storedPremium));
-        }
 
-        // Setup Firebase Authentication Listener
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
-                console.log("User signed in:", user.uid);
-                // 1. Fetch remote data
                 const remoteData = await getUserProgress(user.uid);
-
                 if (remoteData) {
-                    // 2. Smart Merge (Simple version: Remote wins if newer, but ideally we merge counters)
-                    // For MVP: We'll take the max of counters and merge plans.
-                    setStats(prev => {
-                        // If we have significant local progress that isn't on remote (e.g. guest mode before signin),
-                        // we might want to keep it.
-                        // Strategy: Take the set with higher sessionsCompleted.
-                        // Note: This is a simplification.
-
-                        // Actually, better strategy for this phase:
-                        // If remote exists, use it. (Assuming cloud is source of truth)
-                        // But if we just did work as a guest, we want to push that up.
-
-                        // Let's keep it simple: Use remote as base, merge local activePlans if missing.
-
-                        const mergedPlans = { ...remoteData.activePlans };
-                        // If local has plans not in remote, add them
-                        /* 
-                        // This part logic is tricky without knowing if local > remote. 
-                        // For now, let's just use remote data when signed in to ensure consistency across devices.
-                        // If the user was a guest, we should probably PROMPT them to merge, but auto-merge is risky.
-                        */
-
-                        console.log("Loaded remote progress");
-                        return {
-                            totalMeditationMinutes: remoteData.totalMeditationMinutes,
-                            sessionsCompleted: remoteData.sessionsCompleted,
-                            streakDays: remoteData.streakDays,
-                            lastMeditationDate: remoteData.lastMeditationDate,
-                            activePlans: remoteData.activePlans || {}
-                        };
+                    setStats({
+                        totalMeditationMinutes: remoteData.totalMeditationMinutes,
+                        sessionsCompleted: remoteData.sessionsCompleted,
+                        streakDays: remoteData.streakDays,
+                        lastMeditationDate: remoteData.lastMeditationDate,
+                        activePlans: remoteData.activePlans ?? {},
+                        completedConcepts: remoteData.completedConcepts ?? [],
+                        recentlyStudied: remoteData.recentlyStudied ?? [],
                     });
-                } else {
-                    // New user (or first time with this DB logic) -> Save current local stats to cloud
-                    if (user.uid) {
-                        console.log("No remote data, saving local stats to cloud");
-                        // We need to pass the current stats, but referencing the state variable 'stats' here 
-                        // inside useEffect might be stale or require it as dependency.
-                        // To be safe, we'll wait for the next effect trigger or just use the value we loaded from local storage above if strictly needed.
-                        // But easier: rely on the "Save to cloud" effect below.
-                    }
                 }
-            } else {
-                console.log("User signed out");
-                // Optional: clear stats or keep local? 
-                // Usually keep local for guest experience or clear if security is concern.
-                // We'll keep local for smooth UX.
             }
         });
 
         return () => unsubscribe();
     }, []);
 
-    // Save to local storage AND Firebase on change
+    // ─── Persist to localStorage immediately; debounce Firestore writes ─────
     useEffect(() => {
-        localStorage.setItem('darshana_user_stats', JSON.stringify(stats));
+        localStorage.setItem(STORAGE_KEYS.USER_STATS, JSON.stringify(stats));
 
-        // Sync to Firestore if logged in
         if (auth.currentUser) {
-            // Debounce could be good here, but for now direct save is okay for low frequency updates
-            // We ignore the promise result to avoid blocking
-            saveUserProgress(auth.currentUser.uid, stats).catch(err => console.error("Auto-save failed", err));
+            const uid = auth.currentUser.uid;
+
+            // Cancel any pending save and schedule a new one 5 s from now.
+            if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+            saveTimeoutRef.current = setTimeout(() => {
+                saveUserProgress(uid, stats).catch(err =>
+                    console.error("Firestore auto-save failed:", err)
+                );
+            }, 5000);
         }
+
+        return () => {
+            if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        };
     }, [stats]);
 
-    useEffect(() => {
-        localStorage.setItem('darshana_is_premium', JSON.stringify(isPremium));
-    }, [isPremium]);
-
-    const addMeditationSession = (minutes: number) => {
+    // ─── Meditation session ─────────────────────────────────────────────────
+    const addMeditationSession = useCallback((minutes: number) => {
         setStats(prev => {
             const today = new Date().toDateString();
-            const isNewDay = prev.lastMeditationDate !== today;
-            const newStreak = isNewDay ? prev.streakDays + 1 : prev.streakDays;
+            const isToday = prev.lastMeditationDate === today;
+
+            if (isToday) {
+                return {
+                    ...prev,
+                    totalMeditationMinutes: prev.totalMeditationMinutes + minutes,
+                    sessionsCompleted: prev.sessionsCompleted + 1,
+                };
+            }
+
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const wasYesterday = prev.lastMeditationDate === yesterday.toDateString();
 
             return {
                 ...prev,
                 totalMeditationMinutes: prev.totalMeditationMinutes + minutes,
                 sessionsCompleted: prev.sessionsCompleted + 1,
-                streakDays: newStreak,
-                lastMeditationDate: today
+                streakDays: wasYesterday ? prev.streakDays + 1 : 1,
+                lastMeditationDate: today,
             };
         });
-    };
+    }, []);
 
-    const startPlan = (planId: string) => {
+    // ─── Study plan management ──────────────────────────────────────────────
+    const startPlan = useCallback((planId: string) => {
         setStats(prev => {
-            if (prev.activePlans[planId]) return prev; // Already started
+            if (prev.activePlans[planId]) return prev;
             return {
                 ...prev,
                 activePlans: {
@@ -161,35 +144,93 @@ export function UserProgressProvider({ children }: { children: React.ReactNode }
                         planId,
                         completedModules: [],
                         startedAt: new Date().toISOString(),
-                        started: true
-                    }
-                }
+                        started: true,
+                    },
+                },
             };
         });
-    };
+    }, []);
 
-    const completeModule = (planId: string, moduleId: string) => {
+    const completeModule = useCallback((planId: string, moduleId: string) => {
         setStats(prev => {
             const plan = prev.activePlans[planId];
             if (!plan || plan.completedModules.includes(moduleId)) return prev;
-
             return {
                 ...prev,
                 activePlans: {
                     ...prev.activePlans,
                     [planId]: {
                         ...plan,
-                        completedModules: [...plan.completedModules, moduleId]
-                    }
-                }
+                        completedModules: [...plan.completedModules, moduleId],
+                    },
+                },
             };
         });
-    };
+    }, []);
 
-    const togglePremium = () => setIsPremium(!isPremium);
+    // ─── Concept completion ─────────────────────────────────────────────────
+    const markCompleted = useCallback((conceptId: string) => {
+        setStats(prev => {
+            if (prev.completedConcepts.includes(conceptId)) return prev;
+            return {
+                ...prev,
+                completedConcepts: [...prev.completedConcepts, conceptId],
+            };
+        });
+    }, []);
+
+    const markIncomplete = useCallback((conceptId: string) => {
+        setStats(prev => ({
+            ...prev,
+            completedConcepts: prev.completedConcepts.filter(id => id !== conceptId),
+        }));
+    }, []);
+
+    // ─── Recently studied tracking ──────────────────────────────────────────
+    const markViewed = useCallback((conceptId: string, darshanaSlug: string, title: string) => {
+        setStats(prev => {
+            const entry: RecentlyStudiedEntry = {
+                conceptId,
+                darshanaSlug,
+                title,
+                viewedAt: new Date().toISOString(),
+            };
+            // Remove any existing entry for this concept, prepend fresh entry, cap at 10
+            const filtered = prev.recentlyStudied.filter(e => e.conceptId !== conceptId);
+            return {
+                ...prev,
+                recentlyStudied: [entry, ...filtered].slice(0, 10),
+            };
+        });
+    }, []);
+
+    const isCompleted = useCallback(
+        (conceptId: string) => stats.completedConcepts.includes(conceptId),
+        [stats.completedConcepts]
+    );
+
+    const getProgress = useCallback(
+        (darshanaSlug: string, totalConcepts: number) => {
+            const completed = stats.completedConcepts.filter(
+                id => CONCEPT_TO_DARSHANA_MAP[id] === darshanaSlug
+            ).length;
+            return Math.min(completed, totalConcepts);
+        },
+        [stats.completedConcepts]
+    );
 
     return (
-        <UserProgressContext.Provider value={{ stats, isPremium, addMeditationSession, togglePremium, startPlan, completeModule }}>
+        <UserProgressContext.Provider value={{
+            stats,
+            addMeditationSession,
+            startPlan,
+            completeModule,
+            markCompleted,
+            markIncomplete,
+            markViewed,
+            isCompleted,
+            getProgress,
+        }}>
             {children}
         </UserProgressContext.Provider>
     );
