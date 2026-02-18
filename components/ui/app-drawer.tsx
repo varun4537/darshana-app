@@ -74,7 +74,12 @@ export function AppDrawer() {
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 bottom-0 w-[280px] bg-background border-l border-ruby/20 shadow-2xl z-[70] p-6 flex flex-col"
+                            className="fixed top-0 right-0 bottom-0 w-[280px] border-l border-white/8 shadow-2xl z-[70] p-6 flex flex-col"
+                            style={{
+                                background: "rgba(10, 22, 40, 0.82)",
+                                backdropFilter: "blur(24px)",
+                                WebkitBackdropFilter: "blur(24px)",
+                            }}
                         >
                             {/* Header */}
                             <div className="flex justify-between items-center mb-10">

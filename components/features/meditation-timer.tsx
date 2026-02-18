@@ -176,17 +176,23 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
         >
             {/* Breathing Orb Visualization */}
             <div className="relative flex-1 w-full flex items-center justify-center py-10">
-                {/* The Glow Orb */}
+                {/* Warm orb — amber/rose — fades in on Inhale/Hold */}
                 <div
-                    className={cn(
-                        "w-48 h-48 md:w-64 md:h-64 rounded-full blur-[60px] transition-all duration-[4000ms] ease-in-out mix-blend-screen",
-                        "motion-reduce:transition-none motion-reduce:!opacity-40 motion-reduce:!scale-100",
-                        isActive && isExpanding(displayedPhase)
-                            ? "bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 opacity-90 scale-125"
-                            : isActive
-                                ? "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-60 scale-90"
-                                : "bg-surface opacity-30 scale-100"
-                    )}
+                    className="absolute w-48 h-48 md:w-64 md:h-64 rounded-full blur-[60px] mix-blend-screen bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 motion-reduce:!transition-none"
+                    style={{
+                        opacity: isActive && isExpanding(displayedPhase) ? 0.9 : 0,
+                        transform: isActive && isExpanding(displayedPhase) ? "scale(1.25)" : "scale(0.9)",
+                        transition: "opacity 4000ms ease-in-out, transform 4000ms ease-in-out",
+                    }}
+                />
+                {/* Cool orb — indigo/purple — fades in on Exhale/Wait */}
+                <div
+                    className="absolute w-48 h-48 md:w-64 md:h-64 rounded-full blur-[60px] mix-blend-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 motion-reduce:!transition-none"
+                    style={{
+                        opacity: isActive && !isExpanding(displayedPhase) ? 0.6 : 0,
+                        transform: isActive && !isExpanding(displayedPhase) ? "scale(0.9)" : "scale(0.7)",
+                        transition: "opacity 4000ms ease-in-out, transform 4000ms ease-in-out",
+                    }}
                 />
 
                 {/* Center Text Overlay — cross-fades & scales with breath phase */}
