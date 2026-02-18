@@ -11,7 +11,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 /** Format an ISO date string as a relative time label */
 function relativeTime(isoString: string): string {
@@ -80,30 +80,67 @@ function getWeekActivity(recentlyStudied: Array<{ viewedAt: string }>): boolean[
 
 const WEEK_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 
-export default function DashboardPage() {
-    const { stats, startPlan } = useUserProgress();
-    const [user, loading] = useAuthState(auth);
-    const router = useRouter();
+// ── Stripe return toast ──────────────────────────────────────────────────────
+// Isolated into its own component so useSearchParams() can be wrapped in
+// <Suspense> without blocking the rest of the dashboard from rendering.
+function StripeToast() {
     const searchParams = useSearchParams();
-
-    // ── Stripe return toast ────────────────────────────────────────────────
     const [upgradeToast, setUpgradeToast] = useState<"success" | "cancelled" | null>(null);
+
     useEffect(() => {
         const upgraded = searchParams.get("upgraded");
         if (upgraded === "true") setUpgradeToast("success");
         else if (upgraded === "cancelled") setUpgradeToast("cancelled");
 
         if (upgraded) {
-            // Remove the query param from the URL without a full navigation
             const url = new URL(window.location.href);
             url.searchParams.delete("upgraded");
             window.history.replaceState({}, "", url.pathname);
-
-            // Auto-dismiss after 6 s
             const t = setTimeout(() => setUpgradeToast(null), 6000);
             return () => clearTimeout(t);
         }
     }, [searchParams]);
+
+    if (!upgradeToast) return null;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            className={`fixed top-4 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-3 px-5 py-3 rounded-2xl shadow-xl border text-sm font-medium max-w-sm w-full mx-4 ${upgradeToast === "success"
+                ? "bg-emerald-950 border-emerald-500/40 text-emerald-300"
+                : "bg-surface border-ruby/30 text-foreground-muted"
+                }`}
+        >
+            {upgradeToast === "success" ? (
+                <>
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <span>
+                        <strong>Welcome to Premium!</strong> Your subscription is now active.
+                    </span>
+                </>
+            ) : (
+                <>
+                    <span className="text-xl shrink-0">👋</span>
+                    <span>Checkout cancelled — your plan is unchanged.</span>
+                </>
+            )}
+            <button
+                onClick={() => setUpgradeToast(null)}
+                className="ml-auto text-foreground-subtle hover:text-foreground transition-colors p-0.5"
+                aria-label="Dismiss"
+            >
+                <X className="w-3.5 h-3.5" />
+            </button>
+        </motion.div>
+    );
+}
+
+export default function DashboardPage() {
+    const { stats, startPlan } = useUserProgress();
+    const [user, loading] = useAuthState(auth);
+    const router = useRouter();
 
     const handleStartPlan = (planId: string) => {
         startPlan(planId);
@@ -149,7 +186,6 @@ export default function DashboardPage() {
                         Your study progress is saved securely to your account.
                     </p>
                 </div>
-                {/* ?next=/dashboard so login redirects back here after sign-in */}
                 <Link
                     href="/login?next=/dashboard"
                     className="flex items-center gap-2 bg-ruby text-foreground px-6 py-3 rounded-full font-medium hover:bg-ruby-light transition-colors"
@@ -165,39 +201,10 @@ export default function DashboardPage() {
     return (
         <div className="min-h-screen bg-background pb-24 md:pb-0 md:pl-20 pt-20 px-6">
 
-            {/* ── Stripe return toast ────────────────────────────────────── */}
-            {upgradeToast && (
-                <motion.div
-                    initial={{ opacity: 0, y: -16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    className={`fixed top-4 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-3 px-5 py-3 rounded-2xl shadow-xl border text-sm font-medium max-w-sm w-full mx-4 ${upgradeToast === "success"
-                        ? "bg-emerald-950 border-emerald-500/40 text-emerald-300"
-                        : "bg-surface border-ruby/30 text-foreground-muted"
-                        }`}
-                >
-                    {upgradeToast === "success" ? (
-                        <>
-                            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                            <span>
-                                <strong>Welcome to Premium!</strong> Your subscription is now active.
-                            </span>
-                        </>
-                    ) : (
-                        <>
-                            <span className="text-xl shrink-0">👋</span>
-                            <span>Checkout cancelled — your plan is unchanged.</span>
-                        </>
-                    )}
-                    <button
-                        onClick={() => setUpgradeToast(null)}
-                        className="ml-auto text-foreground-subtle hover:text-foreground transition-colors p-0.5"
-                        aria-label="Dismiss"
-                    >
-                        <X className="w-3.5 h-3.5" />
-                    </button>
-                </motion.div>
-            )}
+            {/* Stripe toast — isolated in Suspense because it reads useSearchParams() */}
+            <Suspense fallback={null}>
+                <StripeToast />
+            </Suspense>
 
             <div className="max-w-6xl mx-auto space-y-12">
 
@@ -232,7 +239,7 @@ export default function DashboardPage() {
                 {/* Stats Overview — Streak card spans 2 cols for hero treatment */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-                    {/* ── 4.4 Streak hero card ─────────────────────────── */}
+                    {/* ── Streak hero card ─────────────────────────── */}
                     {(() => {
                         const weekActivity = getWeekActivity(stats.recentlyStudied);
                         return (
@@ -301,14 +308,13 @@ export default function DashboardPage() {
 
                 </div>
 
-                {/* ── 3.5 Zero-state: no concepts studied yet ───────────── */}
+                {/* Zero-state: no concepts studied yet */}
                 {stats.recentlyStudied.length === 0 && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="rounded-2xl border border-ruby/20 bg-surface/60 p-8 flex flex-col items-center text-center gap-5 relative overflow-hidden"
                     >
-                        {/* Decorative glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-ruby/5 via-transparent to-nectar/5 pointer-events-none" />
                         <div className="relative z-10 space-y-2">
                             <p className="text-4xl">🪷</p>

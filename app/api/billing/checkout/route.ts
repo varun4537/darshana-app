@@ -16,9 +16,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2025-01-27.acacia",
-});
+// Prevent Next.js from statically evaluating this route at build time.
+// STRIPE_SECRET_KEY is only available at runtime (Vercel env vars).
+export const dynamic = "force-dynamic";
+
+function getStripe(): Stripe {
+    return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+        apiVersion: "2026-01-28.clover",
+    });
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -33,6 +39,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const stripe = getStripe();
         const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
         const session = await stripe.checkout.sessions.create({

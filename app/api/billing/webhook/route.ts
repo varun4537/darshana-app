@@ -21,14 +21,21 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { adminDb } from "@/lib/firebase-admin";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2025-01-27.acacia",
-});
+// Prevent Next.js from statically evaluating this route at build time.
+// STRIPE_SECRET_KEY is only available at runtime (Vercel env vars).
+export const dynamic = "force-dynamic";
 
 // Next.js must NOT parse the body — Stripe needs the raw bytes to verify HMAC
 export const config = { api: { bodyParser: false } };
 
+function getStripe(): Stripe {
+    return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+        apiVersion: "2026-01-28.clover",
+    });
+}
+
 export async function POST(req: NextRequest) {
+    const stripe = getStripe();
     const sig = req.headers.get("stripe-signature");
     const secret = process.env.STRIPE_WEBHOOK_SECRET!;
 

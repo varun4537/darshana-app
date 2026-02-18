@@ -14,39 +14,37 @@
  *
  * Then encode the private key:
  *   node -e "console.log(Buffer.from(process.env.FIREBASE_PRIVATE_KEY).toString('base64'))"
+ *
+ * firebase-admin v13+ uses the modular API — app.firestore() is removed.
+ * Use getFirestore(app) from 'firebase-admin/firestore' instead.
  */
 
-import admin from "firebase-admin";
+import { initializeApp, getApps, getApp, cert } from "firebase-admin/app";
+import { getFirestore, Firestore } from "firebase-admin/firestore";
 import type { App } from "firebase-admin/app";
 
-let app: App;
-
 function getAdminApp(): App {
-    if (!app) {
-        // Guard: only initialise once across hot-reloads in development
-        if (admin.apps.length === 0) {
-            const privateKeyB64 = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
-            if (!privateKeyB64) {
-                throw new Error(
-                    "[firebase-admin] FIREBASE_ADMIN_PRIVATE_KEY is not set. " +
-                    "See lib/firebase-admin.ts for setup instructions."
-                );
-            }
-
-            app = admin.initializeApp({
-                credential: admin.credential.cert({
-                    projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-                    clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-                    // Vercel stores env vars as base-64 to avoid newline issues
-                    privateKey: Buffer.from(privateKeyB64, "base64").toString("utf8"),
-                }),
-            });
-        } else {
-            app = admin.apps[0]!;
-        }
+    if (getApps().length > 0) {
+        return getApp();
     }
-    return app;
+
+    const privateKeyB64 = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+    if (!privateKeyB64) {
+        throw new Error(
+            "[firebase-admin] FIREBASE_ADMIN_PRIVATE_KEY is not set. " +
+            "See lib/firebase-admin.ts for setup instructions."
+        );
+    }
+
+    return initializeApp({
+        credential: cert({
+            projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+            clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+            // Vercel stores env vars as base-64 to avoid newline issues
+            privateKey: Buffer.from(privateKeyB64, "base64").toString("utf8"),
+        }),
+    });
 }
 
-/** Server-side Firestore instance. */
-export const adminDb = (): admin.firestore.Firestore => getAdminApp().firestore();
+/** Server-side Firestore instance (firebase-admin v13 modular API). */
+export const adminDb = (): Firestore => getFirestore(getAdminApp());
