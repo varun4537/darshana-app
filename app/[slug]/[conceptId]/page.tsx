@@ -4,20 +4,10 @@ import { conceptDetails } from "@/lib/data/concept-details";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { ConceptCard } from "@/components/features/concept-card";
 
-export async function generateStaticParams() {
-    const params = [];
-
-    for (const darshana of Object.values(darshanas)) {
-        for (const concept of darshana.concepts) {
-            params.push({
-                slug: darshana.slug,
-                conceptId: concept.id,
-            });
-        }
-    }
-
-    return params;
-}
+// Render on demand — concept pages use Firebase client SDK (via ConceptCard children)
+// which requires NEXT_PUBLIC_FIREBASE_* env vars that are only available at runtime,
+// not during the Vercel static build phase.
+export const dynamic = "force-dynamic";
 
 // This is a server component
 export default async function ConceptPage({

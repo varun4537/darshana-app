@@ -19,9 +19,10 @@ const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
     'users': Users,
 };
 
-export async function generateStaticParams() {
-    return Object.keys(darshanas).map((slug) => ({ slug }));
-}
+// Render on demand — ConceptListProgress and ConceptCompletedCheck use Firebase
+// client SDK via UserProgress context, which requires NEXT_PUBLIC_FIREBASE_* env
+// vars that are only available at runtime, not during the Vercel static build phase.
+export const dynamic = "force-dynamic";
 
 // This is a server component
 export default async function DarshanaPage({
