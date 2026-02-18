@@ -13,13 +13,25 @@ interface MeditationTimerProps {
 // Reliable ambient sound URL
 const FOREST_SOUND_URL = "https://actions.google.com/sounds/v1/nature/forest_birds.ogg";
 
+// Breath phases — each lasts 4 seconds (box breathing 4-4-4-4)
+const BREATH_PHASES = ["Inhale", "Hold", "Exhale", "Wait"] as const;
+type BreathPhase = typeof BREATH_PHASES[number] | "Ready" | "Done";
+
+// Whether the phase is an expansion phase (orb grows)
+const isExpanding = (phase: BreathPhase) => phase === "Inhale" || phase === "Hold";
+
 export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) {
     const [selectedDuration, setSelectedDuration] = useState(durationMinutes);
     const [timeLeft, setTimeLeft] = useState(durationMinutes * 60);
     const [isActive, setIsActive] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
     const [selectedSound, setSelectedSound] = useState("none");
-    const [breathState, setBreathState] = useState("Ready");
+
+    // Breathing state — two-step: "displayed" lags behind "target" for cross-fade
+    const [targetPhase, setTargetPhase] = useState<BreathPhase>("Ready");
+    const [displayedPhase, setDisplayedPhase] = useState<BreathPhase>("Ready");
+    const [phaseVisible, setPhaseVisible] = useState(true); // controls opacity
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { addMeditationSession } = useUserProgress();
     const startTimeRef = useRef<number | null>(null);
@@ -30,36 +42,49 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
         setTimeLeft(durationMinutes * 60);
         setIsActive(false);
         setIsCompleted(false);
-        setBreathState("Ready");
+        setTargetPhase("Ready");
+        setDisplayedPhase("Ready");
+        setPhaseVisible(true);
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
     }, [durationMinutes]);
 
+    // Cross-fade when target phase changes
+    useEffect(() => {
+        if (targetPhase === displayedPhase) return;
+        // Fade out → swap → fade in
+        setPhaseVisible(false);
+        const swap = setTimeout(() => {
+            setDisplayedPhase(targetPhase);
+            setPhaseVisible(true);
+        }, 350); // half the CSS transition duration
+        return () => clearTimeout(swap);
+    }, [targetPhase, displayedPhase]);
+
     // Breathing Text Cycle — box breathing 4-4-4-4
     useEffect(() => {
-        let breathInterval: NodeJS.Timeout;
+        let breathInterval: ReturnType<typeof setInterval>;
         if (isActive) {
             let phase = 0;
-            const phases = ["Inhale", "Hold", "Exhale", "Wait"];
             const runBreathCycle = () => {
-                setBreathState(phases[phase]);
+                setTargetPhase(BREATH_PHASES[phase]);
                 phase = (phase + 1) % 4;
             };
-            runBreathCycle();
+            runBreathCycle(); // immediate
             breathInterval = setInterval(runBreathCycle, 4000);
         } else if (!isCompleted) {
-            setBreathState("Ready");
+            setTargetPhase("Ready");
         } else {
-            setBreathState("Done");
+            setTargetPhase("Done");
         }
         return () => clearInterval(breathInterval);
     }, [isActive, isCompleted]);
 
     // Timer logic & stats tracking
     useEffect(() => {
-        let interval: NodeJS.Timeout;
+        let interval: ReturnType<typeof setInterval>;
 
         if (isActive && timeLeft > 0) {
             if (!startTimeRef.current) startTimeRef.current = Date.now();
@@ -108,15 +133,13 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
         };
     }, [selectedSound, isActive]);
 
-    const toggleTimer = () => {
-        setIsActive(!isActive);
-    };
+    const toggleTimer = () => setIsActive((prev) => !prev);
 
     const resetTimer = () => {
         setIsActive(false);
         setIsCompleted(false);
         setTimeLeft(selectedDuration * 60);
-        setBreathState("Ready");
+        setTargetPhase("Ready");
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
@@ -143,6 +166,9 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
         ? "0 0 80px rgba(251,191,36,0.22), 0 0 40px rgba(74,90,48,0.1)"
         : "0 0 40px rgba(74,90,48,0.18)";
 
+    // Text scale: expand on Inhale/Hold, contract on Exhale/Wait
+    const textScale = isActive && isExpanding(displayedPhase) ? "scale-110" : isActive ? "scale-90" : "scale-100";
+
     return (
         <div
             className="flex flex-col items-center justify-between h-full w-full min-h-[400px] transition-shadow duration-1000"
@@ -155,7 +181,7 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
                     className={cn(
                         "w-48 h-48 md:w-64 md:h-64 rounded-full blur-[60px] transition-all duration-[4000ms] ease-in-out mix-blend-screen",
                         "motion-reduce:transition-none motion-reduce:!opacity-40 motion-reduce:!scale-100",
-                        isActive && (breathState === "Inhale" || breathState === "Hold")
+                        isActive && isExpanding(displayedPhase)
                             ? "bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 opacity-90 scale-125"
                             : isActive
                                 ? "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-60 scale-90"
@@ -163,16 +189,30 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
                     )}
                 />
 
-                {/* Center Text Overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-                    <span className={cn(
-                        "text-5xl md:text-6xl font-thin tracking-tight transition-all duration-1000",
-                        isActive ? "text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" : "text-foreground-muted"
-                    )}>
-                        {breathState}
+                {/* Center Text Overlay — cross-fades & scales with breath phase */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+                    <span
+                        className={cn(
+                            "text-5xl md:text-6xl font-thin tracking-tight",
+                            "transition-all duration-[3000ms] ease-in-out",
+                            textScale,
+                            isActive ? "text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" : "text-foreground-muted"
+                        )}
+                        style={{
+                            opacity: phaseVisible ? 1 : 0,
+                            transition: "opacity 350ms ease-in-out, transform 3000ms ease-in-out",
+                        }}
+                    >
+                        {displayedPhase}
                     </span>
                     {isActive && (
-                        <span className="text-xs uppercase tracking-[0.3em] text-white/50 mt-4 animate-pulse">
+                        <span
+                            className="text-xs uppercase tracking-[0.3em] text-white/50 mt-4"
+                            style={{
+                                opacity: phaseVisible ? 0.5 : 0,
+                                transition: "opacity 350ms ease-in-out",
+                            }}
+                        >
                             4 Seconds
                         </span>
                     )}

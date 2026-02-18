@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import { MessageCircle, X, Send, Sparkles, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { chatWithGemini } from "@/lib/gemini";
@@ -100,6 +101,12 @@ const MessageContent = ({ text }: { text: string }) => {
 
 export function AiChatOverlay() {
     const { isOpen, openChat, closeChat } = useChat();
+    const pathname = usePathname();
+
+    // Hide the FAB on concept detail pages (e.g. /advaita/avidya) —
+    // those pages already have an inline "Ask a Question" button.
+    const isConceptPage = /^\/[^/]+\/[^/]+$/.test(pathname ?? "");
+
     const [input, setInput] = React.useState("");
     const [messages, setMessages] = React.useState<Message[]>([
         {
@@ -182,13 +189,13 @@ export function AiChatOverlay() {
 
     return (
         <>
-            {/* Floating Action Button — safe-area-aware so it clears the bottom nav on iOS */}
+            {/* Floating Action Button — hidden on concept pages (inline button used there) */}
             <button
                 onClick={openChat}
                 className={cn(
                     "fixed bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl transition-all duration-300",
                     "bg-ruby text-foreground hover:scale-105 hover:bg-ruby-light",
-                    isOpen && "opacity-0 pointer-events-none"
+                    (isOpen || isConceptPage) && "opacity-0 pointer-events-none"
                 )}
             >
                 <MessageCircle className="w-5 h-5" />

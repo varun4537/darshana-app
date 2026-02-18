@@ -21,7 +21,11 @@ export function Slider({ className, value, onValueChange, min = 0, max = 100, st
     const percentage = range > 0 ? Math.min(100, Math.max(0, ((val - min) / range) * 100)) : 0;
 
     return (
-        <div className={cn("relative flex w-full touch-none select-none items-center", className)}>
+        <div
+            className={cn("relative flex w-full touch-none select-none items-center", className)}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+        >
             <div className="relative h-2 w-full grow overflow-hidden rounded-full bg-white/10">
                 <div
                     className="absolute h-full bg-ruby transition-all"

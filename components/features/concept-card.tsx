@@ -365,7 +365,7 @@ export function ConceptCard({
 
                             <div className="glass-card rounded-2xl overflow-hidden"
                                 id="contemplation-card">
-                                <div className="p-5 space-y-2 border-b border-white/6">
+                                <div className="p-5 space-y-2">
                                     <p className="text-foreground-muted text-sm text-center italic leading-relaxed">
                                         &ldquo;{detail.contemplation.prompt}&rdquo;
                                     </p>
