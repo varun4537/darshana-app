@@ -63,11 +63,6 @@ export function ConceptCard({
     const router = useRouter();
 
     /* ── Animation state ──────────────────────────────────────────── */
-    // "enter-left"  = slide in from the right (going forward)
-    // "enter-right" = slide in from the left  (going back)
-    // "idle"        = stable
-    // "exit-left"   = slide out to the left   (swiping to next)
-    // "exit-right"  = slide out to the right  (swiping to prev)
     type AnimState =
         | "enter-left"
         | "enter-right"
@@ -79,7 +74,6 @@ export function ConceptCard({
         enterFrom === "right" ? "enter-right" : "enter-left"
     );
 
-    // Kick the entry animation on mount, then settle to idle
     useEffect(() => {
         const raf = requestAnimationFrame(() => {
             setAnimState("idle");
@@ -95,7 +89,7 @@ export function ConceptCard({
     const touchStartX = useRef(0);
     const touchStartY = useRef(0);
     const touchStartTime = useRef(0);
-    const isLockedVertical = useRef(false); // once we detect vertical scroll, ignore
+    const isLockedVertical = useRef(false);
 
     /* ── Navigate with exit animation ───────────────────────────── */
     const navigateTo = useCallback(
@@ -125,19 +119,16 @@ export function ConceptCard({
         const dx = t.clientX - touchStartX.current;
         const dy = t.clientY - touchStartY.current;
 
-        // Lock to vertical once vertical movement dominates
         if (!isDragging && Math.abs(dy) > VERTICAL_LOCK && Math.abs(dy) > Math.abs(dx)) {
             isLockedVertical.current = true;
         }
         if (isLockedVertical.current) return;
 
-        // Only start horizontal drag if dx dominates
         if (!isDragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
             setIsDragging(true);
         }
 
         if (isDragging) {
-            // Resist at the edges (no concept in that direction)
             const canGoNext = !!nextConcept;
             const canGoPrev = !!prevConcept;
             let resistedDx = dx;
@@ -158,13 +149,10 @@ export function ConceptCard({
         const isSwipe = Math.abs(dragX) >= SWIPE_THRESHOLD || velocity >= SWIPE_VELOCITY;
 
         if (isSwipe && dragX < 0 && nextConcept) {
-            // Swiped left → next concept
             navigateTo(`/${darshanaSlug}/${nextConcept.id}`, "left");
         } else if (isSwipe && dragX > 0 && prevConcept) {
-            // Swiped right → prev concept
             navigateTo(`/${darshanaSlug}/${prevConcept.id}`, "right");
         } else {
-            // Snap back
             setDragX(0);
         }
 
@@ -185,7 +173,6 @@ export function ConceptCard({
         if (animState === "exit-right") {
             return { transform: "translateX(105%)", opacity: 0 };
         }
-        // idle or dragging
         if (isDragging && dragX !== 0) {
             return {
                 transform: `translateX(${dragX}px)`,
@@ -196,13 +183,16 @@ export function ConceptCard({
         return { transform: "translateX(0)", opacity: 1 };
     };
 
-    /* ── Ghost card hint (peek of next/prev at edge) ────────────── */
+    /* ── Ghost card hint ────────────────────────────────────────── */
     const peekOpacity = isDragging ? Math.min(Math.abs(dragX) / 120, 0.6) : 0;
 
     return (
         <>
-            {/* ── Sticky header (outside card, always visible) ───── */}
-            <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-ruby/20 px-4 py-3 flex items-center justify-between">
+            {/* ── Atmospheric lotus background ───────────────────── */}
+            <div className="concept-page-bg" aria-hidden="true" />
+
+            {/* ── Sticky header ──────────────────────────────────── */}
+            <header className="sticky top-0 z-40 bg-background/70 backdrop-blur-md border-b border-white/6 px-4 py-3 flex items-center justify-between">
                 <Link
                     href={`/${darshanaSlug}`}
                     className="flex items-center gap-2 text-sm font-medium text-foreground-muted hover:text-nectar transition-colors p-1"
@@ -211,8 +201,6 @@ export function ConceptCard({
                     <span className="max-w-[100px] truncate">{darshanaTitle}</span>
                 </Link>
 
-                {/* Dot indicator strip — sole position indicator in the header.
-                    For > 12 concepts the dots collapse to a compact "X / Y" text counter. */}
                 <div className="flex items-center gap-1">
                     {totalConcepts <= 12 ? (
                         Array.from({ length: totalConcepts }).map((_, i) => (
@@ -237,13 +225,13 @@ export function ConceptCard({
             {/* ── Swipe arena ────────────────────────────────────── */}
             <div className="relative overflow-hidden">
 
-                {/* Ghost hint cards at edges (prev / next peek) */}
+                {/* Ghost hint cards at edges */}
                 {prevConcept && isDragging && dragX > 0 && (
                     <div
                         className="absolute inset-0 flex items-start pointer-events-none z-0"
                         style={{ opacity: peekOpacity }}
                     >
-                        <div className="w-full h-32 mt-6 mx-4 rounded-2xl bg-surface border border-ruby/20 flex items-center justify-center">
+                        <div className="w-full h-32 mt-6 mx-4 rounded-2xl glass-card flex items-center justify-center">
                             <div className="text-center px-4">
                                 <ChevronLeft className="w-5 h-5 text-foreground-muted mx-auto mb-1" />
                                 <div className="text-xs text-foreground-muted font-medium truncate max-w-[200px]">
@@ -258,7 +246,7 @@ export function ConceptCard({
                         className="absolute inset-0 flex items-start justify-end pointer-events-none z-0"
                         style={{ opacity: peekOpacity }}
                     >
-                        <div className="w-full h-32 mt-6 mx-4 rounded-2xl bg-surface border border-ruby/20 flex items-center justify-center">
+                        <div className="w-full h-32 mt-6 mx-4 rounded-2xl glass-card flex items-center justify-center">
                             <div className="text-center px-4">
                                 <ChevronRight className="w-5 h-5 text-foreground-muted mx-auto mb-1" />
                                 <div className="text-xs text-foreground-muted font-medium truncate max-w-[200px]">
@@ -287,53 +275,62 @@ export function ConceptCard({
                     <main className="max-w-md mx-auto px-4 pt-5 pb-36 space-y-10">
 
                         {/* ── Card: Hero ──────────────────────────── */}
-                        <div className="bg-surface rounded-3xl border border-ruby/20 shadow-card overflow-hidden">
-                            {/* Accent top strip */}
-                            <div className={cn("h-1 w-full", accentColor === "moss" ? "bg-moss" : "bg-ruby")} />
+                        <div className="relative glass-card rounded-3xl shadow-card overflow-hidden"
+                            style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(133,46,71,0.15)" }}>
 
-                            <div className="px-6 pt-8 pb-6 text-center space-y-3">
-                                <h1 className={cn(
-                                    "text-3xl font-serif font-bold leading-tight",
-                                    accentColor === "moss" ? "text-moss-light" : "text-ruby-light"
-                                )}>
-                                    {detail.title}
-                                </h1>
-                                <div className="text-2xl font-devanagari text-nectar">
-                                    {detail.sanskritTitle}
-                                </div>
-                                <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-ruby/10 text-ruby-light border border-ruby/20">
+                            <div className="px-8 pt-8 pb-7 text-center space-y-2">
+                                {/* Level — small, top */}
+                                <span className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-white/5 text-foreground-subtle border border-white/10 mb-1">
                                     {conceptLevel}
                                 </span>
 
-                                {/* Swipe hint (shown only if there are siblings) */}
-                                {(prevConcept || nextConcept) && (
-                                    <div className="flex items-center justify-center gap-2 pt-2 text-[10px] text-foreground-subtle/60">
-                                        {prevConcept && <ChevronLeft className="w-3 h-3" />}
-                                        <span>swipe to navigate</span>
-                                        {nextConcept && <ChevronRight className="w-3 h-3" />}
-                                    </div>
-                                )}
+                                {/* English title — dominant */}
+                                <h1 className="text-5xl font-serif font-bold leading-tight text-foreground">
+                                    {detail.title}
+                                </h1>
+
+                                {/* Sanskrit — secondary, muted nectar */}
+                                <div className="text-3xl font-devanagari" style={{ color: "rgba(194, 68, 28, 0.65)" }}>
+                                    {detail.sanskritTitle}
+                                </div>
                             </div>
+
+                            {/* Faint pulsing swipe arrows — positioned absolutely at card sides */}
+                            {prevConcept && (
+                                <button
+                                    onClick={() => navigateTo(`/${darshanaSlug}/${prevConcept.id}`, "right")}
+                                    className="swipe-arrow absolute left-2 top-1/2 -translate-y-1/2 text-foreground pointer-events-auto"
+                                    aria-label={`Previous: ${prevConcept.title}`}
+                                >
+                                    <ChevronLeft className="w-7 h-7" />
+                                </button>
+                            )}
+                            {nextConcept && (
+                                <button
+                                    onClick={() => navigateTo(`/${darshanaSlug}/${nextConcept.id}`, "left")}
+                                    className="swipe-arrow absolute right-2 top-1/2 -translate-y-1/2 text-foreground pointer-events-auto"
+                                    aria-label={`Next: ${nextConcept.title}`}
+                                >
+                                    <ChevronRight className="w-7 h-7" />
+                                </button>
+                            )}
                         </div>
 
-                        {/* ── Card: Synthesis ─────────────────────── */}
-                        <section className="animate-fade-in space-y-3">
-                            <h2 className="text-sm font-bold uppercase tracking-wider text-foreground-muted px-1 flex items-center gap-2">
-                                <span className="w-4 h-px bg-ruby/40" />
-                                Overview
-                            </h2>
+                        {/* ── Card: Synthesis (no label, no left border) ── */}
+                        <section className="animate-fade-in">
                             <div
-                                className="bg-surface rounded-2xl border border-ruby/15 shadow-card p-5 border-l-4 border-l-nectar"
+                                className="glass-card rounded-2xl p-5 text-foreground-muted leading-relaxed"
+                                style={{ boxShadow: "0 0 40px rgba(133,46,71,0.18)" }}
                                 dangerouslySetInnerHTML={{ __html: sanitizedSynthesis }}
                             />
                         </section>
 
-                        {/* Kolam section divider — between Overview and Sources */}
+                        {/* Kolam section divider */}
                         <div className="kolam-divider" />
 
                         {/* ── Card: Authenticated Sources ─────────── */}
                         <section className="space-y-3">
-                            <div className="flex items-center gap-2 text-foreground-muted">
+                            <div className="flex items-center gap-2 text-foreground-muted px-1">
                                 <BookOpen className="w-4 h-4" />
                                 <h2 className="text-sm font-bold uppercase tracking-wider text-foreground-muted">
                                     Authenticated Sources
@@ -343,9 +340,10 @@ export function ConceptCard({
                                 </span>
                             </div>
 
-                            <div className="bg-surface rounded-2xl border border-ruby/15 shadow-card overflow-hidden">
+                            <div className="glass-card rounded-2xl overflow-hidden"
+                                style={{ boxShadow: "0 0 30px rgba(13,36,77,0.5)" }}>
                                 {detail.sources.length > 0 ? (
-                                    <div className="divide-y divide-ruby/10">
+                                    <div className="divide-y divide-white/6">
                                         {detail.sources.map((source, idx) => (
                                             <SourceAccordion key={idx} source={source} />
                                         ))}
@@ -361,16 +359,19 @@ export function ConceptCard({
                         {/* ── Card: Contemplation ─────────────────── */}
                         <section className="space-y-3">
                             <h2 className="text-sm font-bold uppercase tracking-wider text-foreground-muted px-1 flex items-center gap-2">
-                                <span className="w-4 h-px bg-ruby/40" />
+                                <span className="w-4 h-px bg-moss/40" />
                                 Contemplation
                             </h2>
 
-                            <div className="bg-surface rounded-2xl border border-moss/20 shadow-card p-5 space-y-4">
-                                <p className="text-foreground-muted text-sm text-center italic leading-relaxed">
-                                    &ldquo;{detail.contemplation.prompt}&rdquo;
-                                </p>
-                                <div className="text-sm text-foreground-muted leading-relaxed text-center border-t border-moss/10 pt-4">
-                                    {detail.contemplation.guidance}
+                            <div className="glass-card rounded-2xl overflow-hidden"
+                                id="contemplation-card">
+                                <div className="p-5 space-y-2 border-b border-white/6">
+                                    <p className="text-foreground-muted text-sm text-center italic leading-relaxed">
+                                        &ldquo;{detail.contemplation.prompt}&rdquo;
+                                    </p>
+                                    <div className="text-sm text-foreground-subtle leading-relaxed text-center pt-2">
+                                        {detail.contemplation.guidance}
+                                    </div>
                                 </div>
                                 <MeditationTimer durationMinutes={detail.contemplation.durationMinutes} />
                             </div>
@@ -392,7 +393,7 @@ export function ConceptCard({
                             {prevConcept ? (
                                 <button
                                     onClick={() => navigateTo(`/${darshanaSlug}/${prevConcept.id}`, "right")}
-                                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface/80 backdrop-blur-md border border-ruby/20 text-foreground-muted hover:text-foreground hover:border-ruby/50 transition-all text-sm font-medium group shadow-lg flex-1"
+                                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-full glass-card text-foreground-muted hover:text-foreground hover:border-ruby/50 transition-all text-sm font-medium group shadow-lg flex-1"
                                 >
                                     <ChevronLeft className="w-4 h-4 shrink-0 group-hover:-translate-x-0.5 transition-transform" />
                                     <span className="truncate">{prevConcept.title}</span>
@@ -400,7 +401,7 @@ export function ConceptCard({
                             ) : (
                                 <Link
                                     href={`/${darshanaSlug}`}
-                                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface/80 backdrop-blur-md border border-ruby/20 text-foreground-muted hover:text-foreground hover:border-ruby/50 transition-all text-sm font-medium group shadow-lg"
+                                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-full glass-card text-foreground-muted hover:text-foreground transition-all text-sm font-medium group shadow-lg"
                                 >
                                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                                     <span>Overview</span>

@@ -6,17 +6,19 @@ import { cn } from "@/lib/utils";
 interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value'> {
     value: number[];
     onValueChange: (value: number[]) => void;
+    min?: number;
     max?: number;
     step?: number;
 }
 
-export function Slider({ className, value, onValueChange, max = 100, step = 1, ...props }: SliderProps) {
+export function Slider({ className, value, onValueChange, min = 0, max = 100, step = 1, ...props }: SliderProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onValueChange([parseFloat(e.target.value)]);
     };
 
-    const val = value[0] || 0;
-    const percentage = Math.min(100, Math.max(0, (val / max) * 100));
+    const val = value[0] ?? min;
+    const range = max - min;
+    const percentage = range > 0 ? Math.min(100, Math.max(0, ((val - min) / range) * 100)) : 0;
 
     return (
         <div className={cn("relative flex w-full touch-none select-none items-center", className)}>
@@ -29,7 +31,7 @@ export function Slider({ className, value, onValueChange, max = 100, step = 1, .
             <input
                 type="range"
                 className="absolute w-full h-full opacity-0 cursor-pointer"
-                min={0}
+                min={min}
                 max={max}
                 step={step}
                 value={val}

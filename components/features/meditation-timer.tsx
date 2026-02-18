@@ -4,33 +4,29 @@ import React, { useState, useEffect, useRef } from "react";
 import { Play, Pause, RotateCcw, Trees } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserProgress } from "@/lib/context/user-progress";
+import { Slider } from "@/components/ui/slider";
 
 interface MeditationTimerProps {
     durationMinutes: number;
 }
 
-const AMBIENT_SOUNDS = [
-    { id: "none", label: "Silence", icon: "🔇" },
-    { id: "forest", label: "Forest", icon: "🌲" },
-];
-
-// Reliable ambient sound URLs
-const SOUND_URLS: Record<string, string> = {
-    forest: "https://actions.google.com/sounds/v1/nature/forest_birds.ogg", // Google Action Library
-};
+// Reliable ambient sound URL
+const FOREST_SOUND_URL = "https://actions.google.com/sounds/v1/nature/forest_birds.ogg";
 
 export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) {
+    const [selectedDuration, setSelectedDuration] = useState(durationMinutes);
     const [timeLeft, setTimeLeft] = useState(durationMinutes * 60);
     const [isActive, setIsActive] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
     const [selectedSound, setSelectedSound] = useState("none");
-    const [breathState, setBreathState] = useState("Breathe");
+    const [breathState, setBreathState] = useState("Ready");
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { addMeditationSession } = useUserProgress();
     const startTimeRef = useRef<number | null>(null);
 
-    // Sync state with prop changes
+    // Sync when prop changes (navigating between concepts)
     useEffect(() => {
+        setSelectedDuration(durationMinutes);
         setTimeLeft(durationMinutes * 60);
         setIsActive(false);
         setIsCompleted(false);
@@ -41,17 +37,17 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
         }
     }, [durationMinutes]);
 
-    // Breathing Text Cycle
+    // Breathing Text Cycle — box breathing 4-4-4-4
     useEffect(() => {
         let breathInterval: NodeJS.Timeout;
         if (isActive) {
             let phase = 0;
+            const phases = ["Inhale", "Hold", "Exhale", "Wait"];
             const runBreathCycle = () => {
-                const phases = ["Inhale", "Hold", "Exhale", "Wait"];
                 setBreathState(phases[phase]);
                 phase = (phase + 1) % 4;
             };
-            runBreathCycle(); // Immediate start
+            runBreathCycle();
             breathInterval = setInterval(runBreathCycle, 4000);
         } else if (!isCompleted) {
             setBreathState("Ready");
@@ -61,53 +57,44 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
         return () => clearInterval(breathInterval);
     }, [isActive, isCompleted]);
 
-    // Timer logic & Stats Tracking
+    // Timer logic & stats tracking
     useEffect(() => {
         let interval: NodeJS.Timeout;
 
         if (isActive && timeLeft > 0) {
             if (!startTimeRef.current) startTimeRef.current = Date.now();
-
             interval = setInterval(() => {
                 setTimeLeft((prev) => prev - 1);
             }, 1000);
         } else if (timeLeft === 0 && isActive) {
-            // Timer just finished naturally
             setIsActive(false);
             setIsCompleted(true);
             if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current.currentTime = 0;
             }
-            // Record stats
-            addMeditationSession(durationMinutes);
+            addMeditationSession(selectedDuration);
             startTimeRef.current = null;
         } else if (!isActive && startTimeRef.current) {
-            // Paused or reset manually - logic for partial sessions could go here
-            // For now we only track full completions to encourage practice
             startTimeRef.current = null;
         }
 
         return () => clearInterval(interval);
-    }, [isActive, timeLeft, durationMinutes, addMeditationSession]);
+    }, [isActive, timeLeft, selectedDuration, addMeditationSession]);
 
     // Audio management
     useEffect(() => {
-        if (selectedSound !== "none" && isActive) {
-            const soundUrl = SOUND_URLS[selectedSound];
-            if (soundUrl) {
-                if (!audioRef.current) {
-                    audioRef.current = new Audio(soundUrl);
-                    audioRef.current.loop = true;
-                    audioRef.current.volume = 0.5;
-                } else if (audioRef.current.src !== soundUrl) {
-                    audioRef.current.src = soundUrl;
-                }
-
-                audioRef.current.play().catch((err) => {
-                    console.warn("Audio autoplay blocked:", err);
-                });
+        if (selectedSound === "forest" && isActive) {
+            if (!audioRef.current) {
+                audioRef.current = new Audio(FOREST_SOUND_URL);
+                audioRef.current.loop = true;
+                audioRef.current.volume = 0.5;
+            } else if (audioRef.current.src !== FOREST_SOUND_URL) {
+                audioRef.current.src = FOREST_SOUND_URL;
             }
+            audioRef.current.play().catch((err) => {
+                console.warn("Audio autoplay blocked:", err);
+            });
         } else {
             if (audioRef.current) {
                 audioRef.current.pause();
@@ -128,13 +115,19 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
     const resetTimer = () => {
         setIsActive(false);
         setIsCompleted(false);
-        setTimeLeft(durationMinutes * 60);
+        setTimeLeft(selectedDuration * 60);
         setBreathState("Ready");
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
-        startTimeRef.current = null; // Reset start time on manual reset
+        startTimeRef.current = null;
+    };
+
+    const handleDurationChange = (val: number[]) => {
+        const mins = val[0];
+        setSelectedDuration(mins);
+        setTimeLeft(mins * 60);
     };
 
     const formatTime = (seconds: number) => {
@@ -143,18 +136,24 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
         return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
     };
 
-    const progress = ((durationMinutes * 60 - timeLeft) / (durationMinutes * 60)) * 100;
+    const progress = ((selectedDuration * 60 - timeLeft) / (selectedDuration * 60)) * 100;
+
+    // Card glow transitions from moss → warm amber when timer is running
+    const cardGlow = isActive
+        ? "0 0 80px rgba(251,191,36,0.22), 0 0 40px rgba(74,90,48,0.1)"
+        : "0 0 40px rgba(74,90,48,0.18)";
 
     return (
-        <div className="flex flex-col items-center justify-between h-full w-full min-h-[400px]">
-
+        <div
+            className="flex flex-col items-center justify-between h-full w-full min-h-[400px] transition-shadow duration-1000"
+            style={{ boxShadow: cardGlow }}
+        >
             {/* Breathing Orb Visualization */}
-            <div className="relative flex-1 w-full flex items-center justify-center py-12">
+            <div className="relative flex-1 w-full flex items-center justify-center py-10">
                 {/* The Glow Orb */}
                 <div
                     className={cn(
                         "w-48 h-48 md:w-64 md:h-64 rounded-full blur-[60px] transition-all duration-[4000ms] ease-in-out mix-blend-screen",
-                        // Respect prefers-reduced-motion: freeze the orb at a neutral state
                         "motion-reduce:transition-none motion-reduce:!opacity-40 motion-reduce:!scale-100",
                         isActive && (breathState === "Inhale" || breathState === "Hold")
                             ? "bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 opacity-90 scale-125"
@@ -181,21 +180,46 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
             </div>
 
             {/* Bottom Controls Area */}
-            <div className="w-full max-w-sm space-y-8 bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5">
+            <div className="w-full space-y-6 bg-black/25 backdrop-blur-sm p-6 rounded-b-2xl border-t border-white/5">
 
-                {/* Linear Progress & Time */}
-                <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-medium text-foreground-muted uppercase tracking-wider">
-                        <span>Elapsed</span>
-                        <span>{formatTime(timeLeft)} remaining</span>
-                    </div>
-                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-gradient-to-r from-amber-200 to-rose-400 transition-all duration-1000 ease-linear"
-                            style={{ width: `${Math.min(100, progress)}%` }}
+                {/* Duration Slider — only shown before timer starts */}
+                {!isActive && !isCompleted && (
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs text-foreground-subtle">
+                            <span className="uppercase tracking-wider font-medium">Duration</span>
+                            <span className="text-foreground-muted font-semibold tabular-nums">
+                                {selectedDuration} min
+                            </span>
+                        </div>
+                        <Slider
+                            value={[selectedDuration]}
+                            onValueChange={handleDurationChange}
+                            min={1}
+                            max={30}
+                            step={1}
                         />
+                        <div className="flex justify-between text-[10px] text-foreground-subtle/50">
+                            <span>1 min</span>
+                            <span>30 min</span>
+                        </div>
                     </div>
-                </div>
+                )}
+
+                {/* Linear Progress & Time — shown once started or completed */}
+                {(isActive || isCompleted) && (
+                    <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-medium text-foreground-muted uppercase tracking-wider">
+                            <span>Elapsed</span>
+                            <span>{formatTime(timeLeft)} remaining</span>
+                        </div>
+                        <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-gradient-to-r from-amber-200 to-rose-400 transition-all duration-1000 ease-linear"
+                                style={{ width: `${Math.min(100, progress)}%` }}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 {/* Main Controls row */}
                 <div className="flex items-center justify-between">
@@ -213,7 +237,7 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
                         <Trees className="w-6 h-6" />
                     </button>
 
-                    {/* Play/Pause (Large) */}
+                    {/* Play/Pause */}
                     <button
                         onClick={toggleTimer}
                         className={cn(
@@ -230,12 +254,12 @@ export function MeditationTimer({ durationMinutes = 15 }: MeditationTimerProps) 
                     <button
                         onClick={resetTimer}
                         className="p-3 text-foreground-muted hover:text-white transition-colors"
+                        title="Reset"
                     >
                         <RotateCcw className="w-5 h-5" />
                     </button>
                 </div>
             </div>
-
         </div>
     );
 }
