@@ -1,4 +1,4 @@
-export type Verse = {
+    export type Verse = {
     chapter: number;
     verse: number;
     sanskrit: string;

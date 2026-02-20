@@ -33,45 +33,14 @@ function isRateLimited(ip: string): boolean {
     return false;
 }
 
-// ─── Knowledge base (cached after first async load) ─────────────────────────
-type EmbeddingChunk = {
-    id: string;
-    source: string;
-    text: string;
-    embedding: number[];
-};
+// ─── Knowledge base (Upstash Vector) ─────────────────────────────────────────
 
-let KNOWLEDGE_BASE: EmbeddingChunk[] | null = null;
+import { Index } from "@upstash/vector";
 
-async function loadKnowledgeBase(): Promise<EmbeddingChunk[]> {
-    if (KNOWLEDGE_BASE) return KNOWLEDGE_BASE;
-
-    try {
-        if (!fs.existsSync(EMBEDDINGS_FILE)) {
-            console.warn("Embeddings file not found. RAG will not work.");
-            return [];
-        }
-        // Non-blocking async read avoids holding the event loop for large files
-        const data = await fs.promises.readFile(EMBEDDINGS_FILE, "utf-8");
-        KNOWLEDGE_BASE = JSON.parse(data) as EmbeddingChunk[];
-        return KNOWLEDGE_BASE;
-    } catch (e) {
-        console.error("Failed to load knowledge base:", e);
-        return [];
-    }
-}
-
-// ─── Cosine similarity ───────────────────────────────────────────────────────
-function cosineSimilarity(vecA: number[], vecB: number[]): number {
-    let dot = 0, normA = 0, normB = 0;
-    for (let i = 0; i < vecA.length; i++) {
-        dot += vecA[i] * vecB[i];
-        normA += vecA[i] * vecA[i];
-        normB += vecB[i] * vecB[i];
-    }
-    const denom = Math.sqrt(normA) * Math.sqrt(normB);
-    return denom === 0 ? 0 : dot / denom;
-}
+// Initialize Upstash Vector Index
+// The Index automatically picks up UPSTASH_VECTOR_REST_URL and
+// UPSTASH_VECTOR_REST_TOKEN from the environment variables.
+const index = new Index();
 
 // ─── Query embedding ────────────────────────────────────────────────────────
 async function getQueryEmbedding(query: string): Promise<number[] | null> {
@@ -100,20 +69,22 @@ async function getQueryEmbedding(query: string): Promise<number[] | null> {
 // ─── Vector retrieval ───────────────────────────────────────────────────────
 async function retrieveContext(query: string): Promise<string> {
     try {
-        const knowledge = await loadKnowledgeBase();
-        if (knowledge.length === 0) return "";
-
         const queryEmbedding = await getQueryEmbedding(query);
         if (!queryEmbedding) return "";
 
-        const topChunks = knowledge
-            .map(chunk => ({ ...chunk, score: cosineSimilarity(queryEmbedding, chunk.embedding) }))
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 5);
+        // Query Upstash Vector for the top 5 most similar chunks
+        const results = await index.query({
+            vector: queryEmbedding,
+            topK: 5,
+            includeMetadata: true,
+        });
 
-        return topChunks.map(c => `[Source: ${c.source}]\n${c.text}`).join("\n\n");
+        // Map results back to the context string format
+        return results
+            .map(c => `[Source: ${c.metadata?.source || 'Unknown'}]\n${c.metadata?.text || ''}`)
+            .join("\n\n");
     } catch (e) {
-        console.error("Retrieval error:", e);
+        console.error("Upstash Retrieval error:", e);
         return "";
     }
 }
