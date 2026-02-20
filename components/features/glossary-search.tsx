@@ -128,7 +128,7 @@ export function GlossarySearch() {
                                         {term.transliteration}
                                     </p>
                                 </div>
-                                <span className="text-xl font-devanagari text-ruby-light opacity-80 group-hover:opacity-100 transition-opacity">
+                                <span className="text-xl font-devanagari text-ruby-light opacity-90 group-hover:opacity-100 transition-opacity">
                                     {term.sanskrit}
                                 </span>
                             </CardHeader>

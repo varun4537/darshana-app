@@ -12,7 +12,7 @@ export function Card({ children, className, ...props }: CardProps) {
                 "relative overflow-hidden transition-all duration-300",
                 // Dark mode card style
                 "bg-surface rounded-2xl border border-ruby/20",
-                "shadow-card hover:shadow-glow hover:-translate-y-0.5",
+                "shadow-card hover:shadow-glow hover:-translate-y-1",
                 // No default padding — consumers manage padding via CardContent or className
                 className
             )}

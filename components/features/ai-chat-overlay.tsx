@@ -270,18 +270,21 @@ export function AiChatOverlay() {
 
                     {/* Diya flame flicker typing indicator */}
                     {isTyping && (
-                        <div className="mr-auto bg-surface text-foreground rounded-2xl rounded-tl-none border border-ruby/10 p-3 flex items-end gap-1 h-9">
-                            {[0, 1, 2].map((i) => (
-                                <div
-                                    key={i}
-                                    className="w-1.5 bg-nectar rounded-full"
-                                    style={{
-                                        height: "16px",
-                                        transformOrigin: "bottom",
-                                        animation: `flameFlicker 0.9s ease-in-out ${i * 0.15}s infinite`,
-                                    }}
-                                />
-                            ))}
+                        <div className="mr-auto bg-surface text-foreground rounded-2xl rounded-tl-none border border-ruby/10 p-3 flex items-end gap-2 h-9">
+                            <span className="text-xs text-foreground-muted font-medium mb-0.5">Seeking wisdom...</span>
+                            <div className="flex items-end gap-1 h-full">
+                                {[0, 1, 2].map((i) => (
+                                    <div
+                                        key={i}
+                                        className="w-1.5 bg-nectar rounded-full"
+                                        style={{
+                                            height: "16px",
+                                            transformOrigin: "bottom",
+                                            animation: `flameFlicker 0.9s ease-in-out ${i * 0.15}s infinite`,
+                                        }}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     )}
                     <div ref={messagesEndRef} />

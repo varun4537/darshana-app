@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, BookOpen } from "lucide-react";
+import { ArrowLeft, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, BookOpen, Bell } from "lucide-react";
 import type { LucideProps } from "lucide-react";
 import { darshanas, getVedantaSubSchools } from "@/lib/data/content";
 import { Card, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
@@ -64,7 +64,7 @@ export default async function DarshanaPage({
                 </div>
 
                 <div className="max-w-md mx-auto relative z-10 text-center space-y-4">
-                    <div className="opacity-80 font-devanagari text-2xl mb-2">{darshana.sanskritTitle}</div>
+                    <div className="opacity-90 font-devanagari text-2xl mb-2 hover:opacity-100 transition-opacity">{darshana.sanskritTitle}</div>
                     <h1 className="text-4xl font-serif font-bold">{darshana.title}</h1>
                     <p className="text-foreground-muted leading-relaxed text-sm md:text-base">
                         {darshana.description}
@@ -120,13 +120,21 @@ export default async function DarshanaPage({
                             We are carefully sourcing and verifying texts for {darshana.title}.
                             Check back soon — authentic wisdom takes time.
                         </p>
-                        <Link
-                            href="/"
-                            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ruby/10 border border-ruby/30 text-ruby-light text-sm font-medium hover:bg-ruby/20 transition-colors"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Explore other schools
-                        </Link>
+                        <div className="flex items-center gap-3 mt-6">
+                            <button
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ruby text-foreground text-sm font-medium hover:bg-ruby-light transition-colors"
+                            >
+                                <Bell className="w-4 h-4" />
+                                Notify Me
+                            </button>
+                            <Link
+                                href="/"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ruby/10 border border-ruby/30 text-ruby-light text-sm font-medium hover:bg-ruby/20 transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                Explore other schools
+                            </Link>
+                        </div>
                     </div>
                 ) : (
                     // Concept list (all other schools)

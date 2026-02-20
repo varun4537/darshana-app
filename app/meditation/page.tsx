@@ -64,7 +64,8 @@ export default function MeditationPage() {
                                 <div className="text-[10px] text-foreground-muted uppercase tracking-widest">Total Time</div>
                             </div>
                             <div className="text-center">
-                                <div className="text-2xl font-serif text-ruby-light">{stats.sessionsCompleted}</div>
+                                {/* Fallback to 0 if sessionsCompleted is undefined */}
+                                <div className="text-2xl font-serif text-ruby-light">{stats.sessionsCompleted || 0}</div>
                                 <div className="text-[10px] text-foreground-muted uppercase tracking-widest">Sessions</div>
                             </div>
                         </motion.div>
