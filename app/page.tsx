@@ -4,6 +4,8 @@ import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import type { LucideProps } from "lucide-react";
 import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import { darshanas, getMainSchools, getVedantaSubSchools } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
 import { AppDrawer } from "@/components/ui/app-drawer";
@@ -54,6 +56,17 @@ export default function Home() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-ruby opacity-10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-nectar opacity-5 rounded-full blur-3xl pointer-events-none" />
 
+        {/* Rotating Mandala Watermark */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.03] pointer-events-none animate-spin-slow">
+          <Image
+            src="/images/mandala.png"
+            alt=""
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+
         <div className="relative z-10 max-w-md mx-auto space-y-5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ruby/20 border border-ruby/30 text-ruby-light text-xs font-medium uppercase tracking-widest">
             <Flower2 className="w-3 h-3" />
@@ -99,59 +112,66 @@ export default function Home() {
             return (
               <Link key={darshana.id} href={`/${darshana.slug}`} className="block group">
                 {/* flex-col ensures badge + stats always sit at the card bottom */}
-                <Card className="h-full flex flex-col text-center p-5 hover:shadow-glow transition-all duration-300">
-                  {/* Icon — default tinted ruby, reveals full color on hover */}
-                  <div
-                    className={cn(
-                      "w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300",
-                      "bg-ruby/10 text-ruby-light",
-                      darshana.accentColor === "amber" &&
-                      "group-hover:bg-amber-500 group-hover:text-amber-950",
-                      darshana.accentColor === "stone" &&
-                      "group-hover:bg-stone-500 group-hover:text-stone-950",
-                      darshana.accentColor === "violet" &&
-                      "group-hover:bg-violet-500 group-hover:text-violet-950",
-                      darshana.accentColor === "ruby" &&
-                      "group-hover:bg-ruby group-hover:text-foreground",
-                      darshana.accentColor === "orange" &&
-                      "group-hover:bg-orange-500 group-hover:text-orange-950",
-                      darshana.accentColor === "moss" &&
-                      "group-hover:bg-moss group-hover:text-foreground",
-                      darshana.accentColor === "sky" &&
-                      "group-hover:bg-sky-500 group-hover:text-sky-950",
-                      darshana.accentColor === "emerald" &&
-                      "group-hover:bg-emerald-500 group-hover:text-emerald-950",
-                      isVedanta && "group-hover:bg-indigo-500 group-hover:text-indigo-950"
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="h-full"
+                >
+                  <Card className="h-full flex flex-col text-center p-5 hover:shadow-glow transition-all duration-300">
+                    {/* Icon — default tinted ruby, reveals full color on hover */}
+                    <div
+                      className={cn(
+                        "w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300",
+                        "bg-ruby/10 text-ruby-light",
+                        darshana.accentColor === "amber" &&
+                        "group-hover:bg-amber-500 group-hover:text-amber-950",
+                        darshana.accentColor === "stone" &&
+                        "group-hover:bg-stone-500 group-hover:text-stone-950",
+                        darshana.accentColor === "violet" &&
+                        "group-hover:bg-violet-500 group-hover:text-violet-950",
+                        darshana.accentColor === "ruby" &&
+                        "group-hover:bg-ruby group-hover:text-foreground",
+                        darshana.accentColor === "orange" &&
+                        "group-hover:bg-orange-500 group-hover:text-orange-950",
+                        darshana.accentColor === "moss" &&
+                        "group-hover:bg-moss group-hover:text-foreground",
+                        darshana.accentColor === "sky" &&
+                        "group-hover:bg-sky-500 group-hover:text-sky-950",
+                        darshana.accentColor === "emerald" &&
+                        "group-hover:bg-emerald-500 group-hover:text-emerald-950",
+                        isVedanta && "group-hover:bg-indigo-500 group-hover:text-indigo-950"
+                      )}
+                    >
+                      <Icon className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+
+                    <CardTitle className="text-sm mb-1 group-hover:text-foreground transition-colors leading-tight">
+                      {darshana.title}
+                    </CardTitle>
+
+                    {/* Description fills available vertical space so stats always align at bottom */}
+                    <CardDescription className="text-xs line-clamp-2 px-1 flex-1">
+                      {darshana.description}
+                    </CardDescription>
+
+                    {/* Early Access badge — sacred-gold so it's clearly informational, not a CTA */}
+                    {!isVedanta && !COMPLETE_SCHOOLS.has(darshana.slug) && (
+                      <span className="inline-block mt-2 mb-1 px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest bg-sacred-gold/15 text-sacred-gold border border-sacred-gold/30">
+                        Early Access
+                      </span>
                     )}
-                  >
-                    <Icon className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
-                  </div>
 
-                  <CardTitle className="text-sm mb-1 group-hover:text-foreground transition-colors leading-tight">
-                    {darshana.title}
-                  </CardTitle>
-
-                  {/* Description fills available vertical space so stats always align at bottom */}
-                  <CardDescription className="text-xs line-clamp-2 px-1 flex-1">
-                    {darshana.description}
-                  </CardDescription>
-
-                  {/* Early Access badge — sacred-gold so it's clearly informational, not a CTA */}
-                  {!isVedanta && !COMPLETE_SCHOOLS.has(darshana.slug) && (
-                    <span className="inline-block mt-2 mb-1 px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest bg-sacred-gold/15 text-sacred-gold border border-sacred-gold/30">
-                      Early Access
-                    </span>
-                  )}
-
-                  {/* Stats row — always at the bottom */}
-                  <div className="mt-auto pt-3 border-t border-foreground-subtle/10 flex justify-center items-center">
-                    <span className="text-xs font-bold text-foreground-muted">
-                      {isVedanta
-                        ? `${totalVedantaConcepts} Concepts`
-                        : `${darshana.concepts.length} Concepts`}
-                    </span>
-                  </div>
-                </Card>
+                    {/* Stats row — always at the bottom */}
+                    <div className="mt-auto pt-3 border-t border-foreground-subtle/10 flex justify-center items-center">
+                      <span className="text-xs font-bold text-foreground-muted">
+                        {isVedanta
+                          ? `${totalVedantaConcepts} Concepts`
+                          : `${darshana.concepts.length} Concepts`}
+                      </span>
+                    </div>
+                  </Card>
+                </motion.div>
               </Link>
             );
           })}

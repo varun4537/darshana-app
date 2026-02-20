@@ -5,9 +5,10 @@ import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { Flower2, LogIn, AlertCircle } from "lucide-react";
 import { MandalaLoader } from "@/components/ui/mandala-loader";
+import Image from "next/image";
 
 /**
  * SplashWall
@@ -79,6 +80,27 @@ export function SplashWall({ children }: { children: React.ReactNode }) {
         return <>{children}</>;
     }
 
+    // Staggered entrance animations
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.2,
+            },
+        },
+    };
+
+    const itemVariants: Variants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { type: "spring" as const, stiffness: 300, damping: 24 },
+        },
+    };
+
     // Otherwise, they are locked behind the Wall. Show the login prompt.
     return (
         <AnimatePresence>
@@ -86,36 +108,48 @@ export function SplashWall({ children }: { children: React.ReactNode }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 min-h-screen bg-background flex flex-col items-center justify-center p-6 z-[100] relative overflow-hidden"
+                className="fixed inset-0 min-h-screen bg-background/60 backdrop-blur-md flex flex-col items-center justify-center p-6 z-[100] relative overflow-hidden"
             >
                 {/* Decorative Glows */}
                 <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-ruby/10 rounded-full blur-[120px] pointer-events-none" />
                 <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-nectar/5 rounded-full blur-[120px] pointer-events-none" />
 
+                {/* Rotating Mandala Watermark */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-[0.04] pointer-events-none animate-spin-slow">
+                    <Image
+                        src="/images/mandala.png"
+                        alt=""
+                        fill
+                        className="object-contain"
+                        priority
+                    />
+                </div>
+
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6 }}
-                    className="w-full max-w-md z-10 p-8 rounded-3xl border border-ruby/20 bg-surface/40 backdrop-blur-xl shadow-2xl relative"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="w-full max-w-md z-10 p-8 rounded-3xl border border-ruby/20 bg-surface/30 backdrop-blur-2xl shadow-card relative overflow-hidden"
                 >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-ruby to-transparent opacity-50" />
 
                     <div className="text-center mb-10 space-y-4">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-ruby/20 border border-ruby/30 text-ruby-light mb-2">
+                        <motion.div variants={itemVariants} className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-ruby/20 border border-ruby/30 text-ruby-light mb-2 glass-card">
                             <Flower2 className="w-8 h-8" />
-                        </div>
-                        <h1 className="text-4xl font-serif font-bold text-foreground">Darshana</h1>
-                        <p className="text-foreground-muted text-sm px-4">
+                        </motion.div>
+                        <motion.h1 variants={itemVariants} className="text-4xl font-serif font-bold text-foreground">
+                            Darshana
+                        </motion.h1>
+                        <motion.p variants={itemVariants} className="text-foreground-muted text-sm px-4">
                             Systematic study of Vedanta, Yoga, and the six orthodox schools of Indian philosophy.
-                        </p>
+                        </motion.p>
                     </div>
 
                     <div className="space-y-4">
                         {/* Inline error display */}
                         {signInError && (
                             <motion.div
-                                initial={{ opacity: 0, y: -8 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                variants={itemVariants}
                                 className="flex items-start gap-2 p-3 rounded-xl bg-red-950/50 border border-red-500/30 text-red-400 text-sm mb-4"
                             >
                                 <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
@@ -123,46 +157,53 @@ export function SplashWall({ children }: { children: React.ReactNode }) {
                             </motion.div>
                         )}
 
-                        <button
-                            onClick={handleSignIn}
-                            disabled={isSigningIn}
-                            className="w-full group relative flex items-center justify-center gap-3 bg-white text-black hover:bg-gray-100 py-4 px-6 rounded-2xl transition-all duration-300 font-bold active:scale-95 disabled:opacity-50 disabled:pointer-events-none overflow-hidden"
-                        >
-                            {isSigningIn ? (
-                                <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                            ) : (
-                                <>
-                                    <svg className="w-5 h-5" viewBox="0 0 24 24">
-                                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.24.81-2.6z" fill="#FBBC05" />
-                                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335" />
-                                    </svg>
-                                    <LogIn className="w-0 h-0" />
-                                    Sign in with Google
-                                </>
-                            )}
-                        </button>
+                        <motion.div variants={itemVariants}>
+                            <button
+                                onClick={handleSignIn}
+                                disabled={isSigningIn}
+                                className="w-full relative shadow-soft flex items-center justify-center gap-3 bg-white text-black hover:bg-gray-100 py-4 px-6 rounded-2xl transition-all duration-300 font-bold active:scale-95 disabled:opacity-50 disabled:pointer-events-none overflow-hidden"
+                            >
+                                {/* Subtle Google brand colors on hover for a premium feel */}
+                                <div className="absolute inset-0 opacity-0 hover:opacity-[0.03] transition-opacity duration-300 bg-gradient-to-r from-[#4285F4] via-[#EA4335] to-[#FBBC05]" />
 
-                        <div className="relative">
+                                {isSigningIn ? (
+                                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <svg className="w-5 h-5 relative z-10" viewBox="0 0 24 24">
+                                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.24.81-2.6z" fill="#FBBC05" />
+                                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335" />
+                                        </svg>
+                                        <LogIn className="w-0 h-0" />
+                                        <span className="relative z-10">Sign in with Google</span>
+                                    </>
+                                )}
+                            </button>
+                        </motion.div>
+
+                        <motion.div variants={itemVariants} className="relative">
                             <div className="absolute inset-0 flex items-center">
                                 <span className="w-full border-t border-ruby/10" />
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-[#0a1628] px-2 text-foreground-subtle tracking-widest">Or</span>
+                                <span className="px-2 text-foreground-subtle tracking-widest bg-transparent">Or</span>
                             </div>
-                        </div>
+                        </motion.div>
 
-                        <button
-                            onClick={handleGuest}
-                            className="w-full py-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 text-foreground-muted text-sm font-medium transition-all flex items-center justify-center gap-2 active:scale-95"
-                        >
-                            Continue as Guest
-                        </button>
+                        <motion.div variants={itemVariants}>
+                            <button
+                                onClick={handleGuest}
+                                className="w-full py-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 text-foreground-muted text-sm font-medium transition-all flex items-center justify-center gap-2 active:scale-95"
+                            >
+                                Continue as Guest
+                            </button>
+                        </motion.div>
 
-                        <p className="text-center text-[10px] text-foreground-muted/60 uppercase tracking-[0.2em] pt-4">
+                        <motion.p variants={itemVariants} className="text-center text-[10px] text-foreground-muted/60 uppercase tracking-[0.2em] pt-4">
                             Your soul&apos;s progress is private &amp; secure
-                        </p>
+                        </motion.p>
                     </div>
                 </motion.div>
             </motion.div>

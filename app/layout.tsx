@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Libre_Baskerville, Noto_Serif_Devanagari } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { AtmosphericBackground } from "@/components/ui/atmospheric-bg";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -54,6 +55,7 @@ export default function RootLayout({
             BottomNav and AiChatOverlay are also rendered inside Providers so they
             share the same context instances as the page content.
             The old double-mount of UserProgressProvider here has been removed. */}
+        <AtmosphericBackground />
         <Providers>
           {children}
         </Providers>
