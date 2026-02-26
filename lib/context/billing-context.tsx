@@ -76,6 +76,10 @@ export function BillingProvider({ children }: { children: React.ReactNode }) {
      * Redirect to Stripe Checkout.
      * On success, Stripe webhook sets isPremium=true in Firestore, and the
      * onSnapshot listener above will update the UI automatically.
+     *
+     * TODO: The API route at /api/billing/checkout should verify the user's
+     * identity server-side (e.g., via Firebase Admin SDK token verification)
+     * instead of trusting the client-sent userId.
      */
     const upgradeToPremium = async () => {
         const user = auth.currentUser;

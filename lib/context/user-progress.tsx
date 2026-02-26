@@ -25,9 +25,10 @@ interface UserProgressContextType {
 const UserProgressContext = createContext<UserProgressContextType | undefined>(undefined);
 
 // Build concept → darshana slug map once at module load time
-const CONCEPT_TO_DARSHANA_MAP: Record<string, string> = Object.values(darshanas)
-    .flatMap(darshana => darshana.concepts.map(concept => [concept.id, darshana.slug] as [string, string]))
-    .reduce<Record<string, string>>((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+const CONCEPT_TO_DARSHANA_MAP: Record<string, string> = Object.fromEntries(
+    Object.values(darshanas)
+        .flatMap(darshana => darshana.concepts.map(concept => [concept.id, darshana.slug]))
+);
 
 const DEFAULT_STATS: UserStats = {
     totalMeditationMinutes: 0,

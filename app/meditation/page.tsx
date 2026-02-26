@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MeditationTimer } from "@/components/features/meditation-timer";
 import { motion } from "framer-motion";
 import { Flower2, Wind, Sparkles, ArrowLeft } from "lucide-react";
+import { PremiumBadge } from "@/components/ui/premium-badge";
 import Link from "next/link";
 import { Slider } from "@/components/ui/slider";
 import { useUserProgress } from "@/lib/context/user-progress";
@@ -53,6 +54,9 @@ export default function MeditationPage() {
                     </p>
 
                     {/* Stats — Premium sees data, others get a gentle upgrade nudge */}
+                    <div className="flex items-center justify-center gap-2 mt-3">
+                        <PremiumBadge />
+                    </div>
                     {isPremium ? (
                         <motion.div
                             initial={{ opacity: 0 }}
@@ -60,7 +64,7 @@ export default function MeditationPage() {
                             className="mt-4 flex justify-center gap-6"
                         >
                             <div className="text-center">
-                                <div className="text-2xl font-serif text-ruby-light">{stats.totalMeditationMinutes}m</div>
+                                <div className="text-2xl font-serif text-ruby-light">{Math.round(stats.totalMeditationMinutes)}m</div>
                                 <div className="text-[10px] text-foreground-muted uppercase tracking-widest">Total Time</div>
                             </div>
                             <div className="text-center">

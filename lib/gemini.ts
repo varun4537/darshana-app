@@ -1,7 +1,5 @@
 "use server";
 
-import * as fs from "fs";
-import * as path from "path";
 import { headers } from "next/headers";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
@@ -9,8 +7,6 @@ const MODELS = [
     "google/gemini-2.0-flash-001",
     "meta-llama/llama-3.1-8b-instruct",
 ];
-
-const EMBEDDINGS_FILE = path.join(process.cwd(), "lib", "data", "knowledge-embeddings.json");
 
 const MAX_INPUT_LENGTH = 2000;
 
@@ -20,6 +16,14 @@ const MAX_INPUT_LENGTH = 2000;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 15; // max requests per window per IP
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+// Periodically evict expired entries to prevent unbounded memory growth
+setInterval(() => {
+    const now = Date.now();
+    for (const [ip, entry] of rateLimitMap) {
+        if (now > entry.resetAt) rateLimitMap.delete(ip);
+    }
+}, 5 * 60 * 1000); // every 5 minutes
 
 function isRateLimited(ip: string): boolean {
     const now = Date.now();

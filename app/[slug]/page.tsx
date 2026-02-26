@@ -1,23 +1,15 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users, BookOpen, Bell } from "lucide-react";
-import type { LucideProps } from "lucide-react";
+import { ArrowLeft, BookOpen, Bell } from "lucide-react";
 import { darshanas, getVedantaSubSchools } from "@/lib/data/content";
 import { Card, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
 import { ConceptListProgress, ConceptCompletedCheck } from "@/components/features/concept-progress";
 import { cn } from "@/lib/utils";
 import { AppDrawer } from "@/components/ui/app-drawer";
+import { ICON_MAP } from "@/lib/icons";
+import { Flower2 } from "lucide-react";
 
-const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
-    'scale': Scale,
-    'atom': Atom,
-    'layers': Layers,
-    'flower': Flower2,
-    'flame': Flame,
-    'infinity': Infinity,
-    'heart': Heart,
-    'users': Users,
-};
+
 
 // Render on demand — ConceptListProgress and ConceptCompletedCheck use Firebase
 // client SDK via UserProgress context, which requires NEXT_PUBLIC_FIREBASE_* env
@@ -121,12 +113,13 @@ export default async function DarshanaPage({
                             Check back soon — authentic wisdom takes time.
                         </p>
                         <div className="flex items-center gap-3 mt-6">
-                            <button
+                            <a
+                                href="mailto:support@darshana.app?subject=Notify%20me%20about%20new%20content"
                                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ruby text-foreground text-sm font-medium hover:bg-ruby-light transition-colors"
                             >
                                 <Bell className="w-4 h-4" />
                                 Notify Me
-                            </button>
+                            </a>
                             <Link
                                 href="/"
                                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ruby/10 border border-ruby/30 text-ruby-light text-sm font-medium hover:bg-ruby/20 transition-colors"

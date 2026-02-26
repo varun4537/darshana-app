@@ -14,17 +14,19 @@ import {
     LogIn,
     Flower2,
     BookMarked,
+    User,
 } from "lucide-react";
 import Link from "next/link";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/lib/firebase";
 
-const MENU_ITEMS = [
+const BASE_MENU_ITEMS = [
     { label: "Home", href: "/", icon: HomeIcon },
     { label: "Dashboard", href: "/dashboard", icon: Layout },
     { label: "Glossary", href: "/glossary", icon: BookMarked },
     { label: "Source Library", href: "/texts", icon: Library },
     { label: "Meditation Timer", href: "/meditation", icon: Timer },
     { label: "About & Sources", href: "/about", icon: Info },
-    { label: "Sign In", href: "/login", icon: LogIn },
 ];
 
 /**
@@ -51,6 +53,15 @@ export function AppDrawerTrigger({ onClick }: { onClick?: () => void }) {
  */
 export function AppDrawer() {
     const [isOpen, setIsOpen] = useState(false);
+    const [user] = useAuthState(auth);
+
+    // Auth-aware: show "Profile" when logged in, "Sign In" when not
+    const MENU_ITEMS = [
+        ...BASE_MENU_ITEMS,
+        user
+            ? { label: "Profile", href: "/login", icon: User }
+            : { label: "Sign In", href: "/login", icon: LogIn },
+    ];
 
     return (
         <>
@@ -74,7 +85,7 @@ export function AppDrawer() {
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 bottom-0 w-[280px] bg-background border-l border-white/10 shadow-2xl z-[70] p-6 flex flex-col"
+                            className="fixed top-0 right-0 bottom-0 w-[280px] bg-background/80 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-[70] p-6 flex flex-col"
                         >
                             {/* Header */}
                             <div className="flex justify-between items-center mb-10">

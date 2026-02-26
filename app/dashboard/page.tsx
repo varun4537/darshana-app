@@ -6,6 +6,7 @@ import { darshanas } from "@/lib/data/content";
 import { StudyPlanCard } from "@/components/features/study-plan-card";
 import { motion } from "framer-motion";
 import { Flame, Layout, Sparkles, LogIn, Clock, Download, CheckCircle2, X, ArrowRight } from "lucide-react";
+import { PremiumBadge } from "@/components/ui/premium-badge";
 import { MandalaLoader } from "@/components/ui/mandala-loader";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
@@ -142,9 +143,7 @@ export default function DashboardPage() {
     const [user, loading] = useAuthState(auth);
     const router = useRouter();
 
-    const handleStartPlan = (planId: string) => {
-        startPlan(planId);
-    };
+
 
     const handleResumePlan = (planId: string) => {
         const plan = STUDY_PLANS.find(p => p.id === planId);
@@ -220,7 +219,10 @@ export default function DashboardPage() {
                                 <Layout className="w-8 h-8" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-serif text-foreground font-bold">Your Path</h1>
+                                <div className="flex items-center gap-2">
+                                    <h1 className="text-3xl font-serif text-foreground font-bold">Your Path</h1>
+                                    <PremiumBadge />
+                                </div>
                                 <p className="text-foreground-muted">Track your journey through Indian philosophy.</p>
                             </div>
                         </div>
@@ -382,7 +384,7 @@ export default function DashboardPage() {
                                         key={plan.id}
                                         plan={plan}
                                         progress={progress}
-                                        onStart={handleStartPlan}
+                                        onStart={startPlan}
                                         onResume={handleResumePlan}
                                     />
                                 );
@@ -393,13 +395,16 @@ export default function DashboardPage() {
 
                 {/* Available Plans */}
                 <div className="space-y-6">
-                    <h2 className="text-xl font-bold text-foreground">Available Study Plans</h2>
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground">Available Study Plans</h2>
+                        <PremiumBadge />
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {STUDY_PLANS.filter(plan => !stats.activePlans[plan.id]).map((plan) => (
                             <StudyPlanCard
                                 key={plan.id}
                                 plan={plan}
-                                onStart={handleStartPlan}
+                                onStart={startPlan}
                                 onResume={handleResumePlan}
                             />
                         ))}

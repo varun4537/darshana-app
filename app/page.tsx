@@ -1,14 +1,14 @@
 "use client";
 
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import type { LucideProps } from "lucide-react";
-import { ArrowRight, Scale, Atom, Layers, Flower2, Flame, Infinity, Heart, Users } from "lucide-react";
+import { ArrowRight, Flower2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { darshanas, getMainSchools, getVedantaSubSchools } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
 import { AppDrawer } from "@/components/ui/app-drawer";
+import { ICON_MAP } from "@/lib/icons";
 
 /**
  * Schools whose content is fully authenticated (5+ sources per concept).
@@ -16,16 +16,7 @@ import { AppDrawer } from "@/components/ui/app-drawer";
  */
 const COMPLETE_SCHOOLS = new Set(["advaita", "yoga"]);
 
-const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
-  scale: Scale,
-  atom: Atom,
-  layers: Layers,
-  flower: Flower2,
-  flame: Flame,
-  infinity: Infinity,
-  heart: Heart,
-  users: Users,
-};
+
 
 export default function Home() {
   const mainDarshanas = getMainSchools().filter(

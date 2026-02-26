@@ -33,7 +33,7 @@ export function BottomNav() {
                             ? pathname === "/"
                             : item.href === "/"
                                 ? pathname === "/"
-                                : pathname.startsWith(item.href);
+                                : pathname === item.href || pathname.startsWith(item.href + "/");
 
                     // Show lock badge on auth-required items when user is not signed in
                     const isLocked = item.requiresAuth && !loading && !user;

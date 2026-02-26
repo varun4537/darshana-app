@@ -4,6 +4,7 @@ import * as React from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, X, Send, Sparkles, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PremiumBadge } from "@/components/ui/premium-badge";
 import { chatWithGemini } from "@/lib/gemini";
 import { useChat } from "@/lib/chat-context";
 
@@ -205,7 +206,7 @@ export function AiChatOverlay() {
             {/* Chat Drawer */}
             <div
                 className={cn(
-                    "fixed inset-y-0 right-0 z-50 w-full md:w-[400px] bg-background shadow-2xl border-l border-ruby/20 transform transition-transform duration-300 ease-in-out flex flex-col",
+                    "fixed inset-y-0 right-0 z-50 w-full md:w-[400px] bg-background/80 backdrop-blur-2xl shadow-2xl border-l border-ruby/20 transform transition-transform duration-300 ease-in-out flex flex-col",
                     isOpen ? "translate-x-0" : "translate-x-full"
                 )}
             >
@@ -214,6 +215,7 @@ export function AiChatOverlay() {
                     <div className="flex items-center gap-2 text-foreground">
                         <Sparkles className="w-4 h-4 text-nectar" />
                         <span className="font-serif font-bold">Darshana Assistant</span>
+                        <PremiumBadge />
                     </div>
                     <button
                         onClick={closeChat}
@@ -225,7 +227,7 @@ export function AiChatOverlay() {
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-background">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-transparent">
                     {messages.map((msg) => (
                         <div
                             key={msg.id}
@@ -291,7 +293,7 @@ export function AiChatOverlay() {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 bg-surface border-t border-ruby/10">
+                <div className="p-4 bg-surface/50 backdrop-blur-md border-t border-ruby/10">
                     <form
                         onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                         className="flex items-center gap-2 bg-background rounded-full border border-foreground-subtle/30 px-2 py-2 focus-within:border-ruby/50 focus-within:ring-2 focus-within:ring-ruby/20 transition-all"

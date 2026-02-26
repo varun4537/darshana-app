@@ -5,7 +5,10 @@
  * handlers (on*), and javascript: URIs. Applied to any HTML rendered with
  * dangerouslySetInnerHTML so future data-source changes don't introduce XSS.
  *
- * For fully untrusted user-generated content, upgrade to isomorphic-dompurify.
+ * ⚠️ TODO: Regex-based sanitizers are inherently fragile and can be bypassed.
+ * If any content flowing through this function could originate from user input
+ * or untrusted external APIs, upgrade to `isomorphic-dompurify` which uses a
+ * proper DOM parser. Current usage is safe because all data is static/curated.
  */
 export function sanitizeHtml(html: string): string {
     return html
