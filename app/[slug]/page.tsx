@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Bell } from "lucide-react";
 import { darshanas, getVedantaSubSchools } from "@/lib/data/content";
@@ -14,6 +15,17 @@ import { Flower2 } from "lucide-react";
 // Pre-render all school pages at build time for instant CDN delivery
 export async function generateStaticParams() {
     return Object.keys(darshanas).map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const darshana = darshanas[slug];
+    if (!darshana) return {};
+    const count = darshana.concepts.length;
+    return {
+        title: darshana.title,
+        description: `${darshana.description.slice(0, 150)}${count > 0 ? ` — ${count} concepts to explore.` : ""}`,
+    };
 }
 
 // This is a server component

@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, AlertTriangle, Mail, Heart, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { AppDrawer } from "@/components/ui/app-drawer";
+
+export const metadata: Metadata = {
+    title: "About & Sources",
+    description: "Learn about Darshana's mission to make Indian philosophy accessible through authenticated source texts.",
+};
 
 export default function AboutPage() {
     return (

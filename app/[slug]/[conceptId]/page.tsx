@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { darshanas } from "@/lib/data/content";
 import { conceptDetails } from "@/lib/data/concept-details";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -13,6 +14,18 @@ export async function generateStaticParams() {
         }
     }
     return params;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; conceptId: string }> }): Promise<Metadata> {
+    const { slug, conceptId } = await params;
+    const darshana = darshanas[slug];
+    if (!darshana) return {};
+    const concept = darshana.concepts.find(c => c.id === conceptId);
+    if (!concept) return {};
+    return {
+        title: `${concept.title} — ${darshana.title}`,
+        description: concept.description,
+    };
 }
 
 // This is a server component

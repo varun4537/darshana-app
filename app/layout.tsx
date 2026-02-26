@@ -27,17 +27,25 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Darshana | Hindu Philosophy Learning",
-  description: "Systematic study of Vedanta and Yoga",
+  title: {
+    default: "Darshana — Study Indian Philosophy",
+    template: "%s — Darshana",
+  },
+  description: "Systematic study of the six orthodox schools of Indian philosophy — Nyaya, Vaisheshika, Samkhya, Yoga, Mimamsa & Vedanta — through authenticated source texts and guided contemplation.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "Darshana",
   },
-  // apple-touch-icon for iOS home screen
   icons: {
-    apple: '/icons/icon-512x512.svg',
+    apple: '/icons/icon-512x512.png',
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Darshana",
+    title: "Darshana — Study Indian Philosophy",
+    description: "Explore Vedanta, Yoga, Nyaya & more through verified source texts.",
   },
 };
 

@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { sourceTexts } from "@/lib/data/texts";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { BookOpen, ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+    title: "Source Library",
+    description: "Browse the authenticated scriptures and primary source texts used by Darshana — Yoga Sutras, Brahma Sutras, and more.",
+};
 
 export default function LibraryPage() {
     return (

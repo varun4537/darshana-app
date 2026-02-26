@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { GlossarySearch } from "@/components/features/glossary-search";
+
+export const metadata: Metadata = {
+    title: "Glossary",
+    description: "Sanskrit philosophical terms with meanings — search and browse the complete glossary of Indian philosophy.",
+};
 
 /**
  * Glossary page — server component.
