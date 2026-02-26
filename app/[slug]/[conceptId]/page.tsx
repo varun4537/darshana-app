@@ -4,21 +4,24 @@ import { conceptDetails } from "@/lib/data/concept-details";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { ConceptCard } from "@/components/features/concept-card";
 
-// Render on demand — concept pages use Firebase client SDK (via ConceptCard children)
-// which requires NEXT_PUBLIC_FIREBASE_* env vars that are only available at runtime,
-// not during the Vercel static build phase.
-export const dynamic = "force-dynamic";
+// Pre-render all concept pages at build time for instant CDN delivery
+export async function generateStaticParams() {
+    const params: { slug: string; conceptId: string }[] = [];
+    for (const [slug, darshana] of Object.entries(darshanas)) {
+        for (const concept of darshana.concepts) {
+            params.push({ slug, conceptId: concept.id });
+        }
+    }
+    return params;
+}
 
 // This is a server component
 export default async function ConceptPage({
     params,
-    searchParams,
 }: {
     params: Promise<{ slug: string; conceptId: string }>;
-    searchParams: Promise<{ dir?: string }>;
 }) {
     const { slug, conceptId } = await params;
-    const { dir } = await searchParams;
 
     // 1. Validate route params
     const darshana = darshanas[slug];
@@ -49,8 +52,9 @@ export default async function ConceptPage({
     // 4. Sanitize HTML on the server before sending to client
     const sanitizedSynthesis = sanitizeHtml(detail.synthesis);
 
-    // 5. Determine enter direction from search param
-    const enterFrom = dir === "right" ? "right" : "left";
+    // 5. Animation direction defaults to "left"; the ConceptCard reads
+    //    the ?dir param client-side to avoid forcing this page dynamic.
+    const enterFrom = "left";
 
     // 6. Determine accent color
     const isVedanta = slug === "advaita" || slug === "vishishtadvaita" || slug === "dvaita" || slug === "vedanta";

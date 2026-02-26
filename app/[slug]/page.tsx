@@ -11,10 +11,10 @@ import { Flower2 } from "lucide-react";
 
 
 
-// Render on demand — ConceptListProgress and ConceptCompletedCheck use Firebase
-// client SDK via UserProgress context, which requires NEXT_PUBLIC_FIREBASE_* env
-// vars that are only available at runtime, not during the Vercel static build phase.
-export const dynamic = "force-dynamic";
+// Pre-render all school pages at build time for instant CDN delivery
+export async function generateStaticParams() {
+    return Object.keys(darshanas).map((slug) => ({ slug }));
+}
 
 // This is a server component
 export default async function DarshanaPage({

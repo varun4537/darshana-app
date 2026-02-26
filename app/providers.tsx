@@ -1,11 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { ChatProvider } from "@/lib/chat-context";
 import { UserProgressProvider } from "@/lib/context/user-progress";
 import { BillingProvider } from "@/lib/context/billing-context";
-import { AiChatOverlay } from "@/components/features/ai-chat-overlay";
 import { BottomNav } from "@/components/ui/bottom-nav";
-import { SplashWall } from "@/components/features/splash-wall";
+
+// Lazy-load heavy components that aren't needed for initial page render
+const AiChatOverlay = dynamic(
+    () => import("@/components/features/ai-chat-overlay").then(m => m.AiChatOverlay),
+    { ssr: false }
+);
+const SplashWall = dynamic(
+    () => import("@/components/features/splash-wall").then(m => m.SplashWall),
+    { ssr: false }
+);
 
 /**
  * Wraps the entire app in all required context providers.

@@ -1,22 +1,18 @@
-"use client";
-
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { ArrowRight, Flower2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { darshanas, getMainSchools, getVedantaSubSchools } from "@/lib/data/content";
+import { getMainSchools, getVedantaSubSchools } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
 import { AppDrawer } from "@/components/ui/app-drawer";
 import { ICON_MAP } from "@/lib/icons";
+import { AnimatedCard } from "@/components/ui/animated-card";
 
 /**
  * Schools whose content is fully authenticated (5+ sources per concept).
  * Others show an "Early Access" badge indicating content is still being enriched.
  */
 const COMPLETE_SCHOOLS = new Set(["advaita", "yoga"]);
-
-
 
 export default function Home() {
   const mainDarshanas = getMainSchools().filter(
@@ -102,13 +98,8 @@ export default function Home() {
 
             return (
               <Link key={darshana.id} href={`/${darshana.slug}`} className="block group">
-                {/* flex-col ensures badge + stats always sit at the card bottom */}
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  className="h-full"
-                >
+                {/* AnimatedCard is a thin client component for Framer Motion */}
+                <AnimatedCard>
                   <Card className="h-full flex flex-col text-center p-5 hover:shadow-glow transition-all duration-300">
                     {/* Icon — default tinted ruby, reveals full color on hover */}
                     <div
@@ -162,7 +153,7 @@ export default function Home() {
                       </span>
                     </div>
                   </Card>
-                </motion.div>
+                </AnimatedCard>
               </Link>
             );
           })}
