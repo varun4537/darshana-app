@@ -222,6 +222,14 @@ export function ConceptCard({
                 </div>
             </header>
 
+            {/* ── Progress bar ────────────────────────────────── */}
+            <div className="h-0.5 bg-white/5">
+                <div
+                    className="h-full bg-nectar/60 transition-all duration-500 ease-out"
+                    style={{ width: `${((conceptIndex + 1) / totalConcepts) * 100}%` }}
+                />
+            </div>
+
             {/* ── Swipe arena ────────────────────────────────────── */}
             <div className="relative overflow-hidden">
 
@@ -290,7 +298,7 @@ export function ConceptCard({
                                 </h1>
 
                                 {/* Sanskrit — secondary, muted nectar */}
-                                <div className="text-3xl font-devanagari" style={{ color: "rgba(194, 68, 28, 0.65)" }}>
+                                <div className="text-3xl font-devanagari text-nectar/65">
                                     {detail.sanskritTitle}
                                 </div>
                             </div>
