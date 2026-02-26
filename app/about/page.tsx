@@ -26,7 +26,7 @@ export default function AboutPage() {
 
                 {/* Header */}
                 <header className="mb-12 text-center space-y-4">
-                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-ruby-light">About Darshana</h1>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-nectar-light">About Darshana</h1>
                     <p className="text-xl text-foreground-muted max-w-2xl mx-auto">
                         A digital gateway to the six orthodox systems of Indian Philosophy.
                     </p>
@@ -38,7 +38,7 @@ export default function AboutPage() {
                     <section>
                         <Card className="border-ruby/20 bg-surface/50 backdrop-blur-sm">
                             <CardContent className="p-8 space-y-4">
-                                <div className="flex items-center gap-3 text-ruby-light mb-2">
+                                <div className="flex items-center gap-3 text-nectar-light mb-2">
                                     <Heart className="w-6 h-6" />
                                     <h2 className="text-2xl font-serif font-bold">Our Mission</h2>
                                 </div>
@@ -65,7 +65,7 @@ export default function AboutPage() {
                                 </p>
                                 <div className="grid md:grid-cols-2 gap-6 text-sm">
                                     <div>
-                                        <h3 className="font-bold text-ruby-light mb-2">Nyaya &amp; Vaisheshika</h3>
+                                        <h3 className="font-bold text-nectar-light mb-2">Nyaya &amp; Vaisheshika</h3>
                                         <ul className="space-y-1 text-foreground-muted">
                                             <li>• <em>Nyaya Sutras</em> of Gautama (with Vatsyayana Bhashya)</li>
                                             <li>• <em>Vaisheshika Sutras</em> of Kanada</li>
@@ -74,7 +74,7 @@ export default function AboutPage() {
                                         </ul>
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-ruby-light mb-2">Samkhya &amp; Yoga</h3>
+                                        <h3 className="font-bold text-nectar-light mb-2">Samkhya &amp; Yoga</h3>
                                         <ul className="space-y-1 text-foreground-muted">
                                             <li>• <em>Samkhya Karika</em> of Ishvarakrishna</li>
                                             <li>• <em>Yoga Sutras</em> of Patanjali</li>
@@ -83,7 +83,7 @@ export default function AboutPage() {
                                         </ul>
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-ruby-light mb-2">Purva Mimamsa</h3>
+                                        <h3 className="font-bold text-nectar-light mb-2">Purva Mimamsa</h3>
                                         <ul className="space-y-1 text-foreground-muted">
                                             <li>• <em>Mimamsa Sutras</em> of Jaimini</li>
                                             <li>• <em>Shabara Bhashya</em></li>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                                         </ul>
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-ruby-light mb-2">Vedanta (Uttara Mimamsa)</h3>
+                                        <h3 className="font-bold text-nectar-light mb-2">Vedanta (Uttara Mimamsa)</h3>
                                         <ul className="space-y-1 text-foreground-muted">
                                             <li>• <em>The Principal Upanishads</em> (Isha, Kena, Katha, etc.)</li>
                                             <li>• <em>Brahma Sutras</em> of Badarayana</li>
@@ -129,7 +129,7 @@ export default function AboutPage() {
                     {/* Contact */}
                     <section className="text-center pt-8 pb-16">
                         <div className="inline-flex flex-col items-center gap-2">
-                            <div className="bg-ruby/20 p-4 rounded-full text-ruby-light mb-2">
+                            <div className="bg-nectar/20 p-4 rounded-full text-nectar-light mb-2">
                                 <Mail className="w-6 h-6" />
                             </div>
                             <h3 className="text-lg font-medium">Contact Us</h3>

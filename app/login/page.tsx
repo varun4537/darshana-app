@@ -156,7 +156,7 @@ export default function LoginPage() {
             >
                 <div className="text-center mb-10 space-y-4">
                     <motion.div variants={itemVariants}>
-                        <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-ruby/20 border border-ruby/30 text-ruby-light mb-4 glass-card hover:scale-105 transition-transform">
+                        <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-nectar/20 border border-nectar/30 text-nectar-light mb-4 glass-card hover:scale-105 transition-transform">
                             <Flower2 className="w-8 h-8" />
                         </Link>
                     </motion.div>

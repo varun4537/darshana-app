@@ -116,7 +116,7 @@ export default async function DarshanaPage({
                 ) : darshana.concepts.length === 0 ? (
                     // Empty state — school exists in data but has no concepts yet
                     <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                        <div className="w-16 h-16 rounded-2xl bg-ruby/10 flex items-center justify-center text-ruby-light mb-2">
+                        <div className="w-16 h-16 rounded-2xl bg-nectar/10 flex items-center justify-center text-nectar-light mb-2">
                             <BookOpen className="w-8 h-8" />
                         </div>
                         <h2 className="text-xl font-serif font-bold text-foreground">Content Coming Soon</h2>
@@ -134,7 +134,7 @@ export default async function DarshanaPage({
                             </a>
                             <Link
                                 href="/"
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ruby/10 border border-ruby/30 text-ruby-light text-sm font-medium hover:bg-ruby/20 transition-colors"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 border border-nectar/30 text-nectar-light text-sm font-medium hover:bg-nectar/10 transition-colors"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                                 Explore other schools

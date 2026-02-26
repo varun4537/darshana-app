@@ -44,7 +44,7 @@ export default function MeditationPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-8"
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ruby/10 border border-ruby/20 text-ruby-light text-[10px] font-bold uppercase tracking-[0.2em] mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-nectar/40 text-nectar-light text-[10px] font-bold uppercase tracking-[0.2em] mb-4">
                         <Wind className="w-3 h-3" />
                         <span>Sacred Space</span>
                     </div>

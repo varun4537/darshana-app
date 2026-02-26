@@ -105,7 +105,7 @@ export default function Home() {
                     <div
                       className={cn(
                         "w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300",
-                        "bg-ruby/10 text-ruby-light",
+                        "bg-nectar/10 text-nectar-light",
                         darshana.accentColor === "amber" &&
                         "group-hover:bg-amber-500 group-hover:text-amber-950",
                         darshana.accentColor === "stone" &&
