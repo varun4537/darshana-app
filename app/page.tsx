@@ -55,7 +55,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 max-w-md mx-auto space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ruby/20 border border-ruby/30 text-ruby-light text-xs font-medium uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-nectar/40 text-nectar-light text-xs font-bold uppercase tracking-widest">
             <Flower2 className="w-3 h-3" />
             <span>Authentic Wisdom</span>
           </div>
@@ -73,7 +73,7 @@ export default function Home() {
           {/* CTA scrolls to the school grid — neutral entry point for all users */}
           <a
             href="#schools"
-            className="inline-flex items-center justify-center gap-2 bg-ruby border border-ruby-light text-foreground hover:bg-ruby-light px-6 py-2.5 rounded-full transition-all duration-300 font-medium group text-sm"
+            className="inline-flex items-center justify-center gap-2 bg-nectar-dark border border-nectar text-foreground hover:bg-nectar px-6 py-2.5 rounded-full transition-all duration-300 font-bold group text-sm shadow-lg"
           >
             Begin Journey
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
