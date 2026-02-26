@@ -70,65 +70,70 @@ export function AppDrawer() {
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        {/* Backdrop */}
+                        {/* Backdrop — nearly opaque to fully hide the atmospheric bg */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsOpen(false)}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
+                            className="fixed inset-0 bg-black/90 z-[60]"
                         />
 
-                        {/* Drawer panel */}
+                        {/* Drawer panel — motion.div only handles slide animation */}
                         <motion.div
                             initial={{ x: "100%" }}
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 bottom-0 w-[280px] isolate border-l border-white/10 shadow-2xl z-[70] p-6 flex flex-col"
-                            style={{ backgroundColor: '#0A1628' }}
+                            className="fixed top-0 right-0 bottom-0 w-[280px] z-[70]"
                         >
-                            {/* Header */}
-                            <div className="flex justify-between items-center mb-10">
-                                <span className="font-serif text-xl font-bold text-ruby-light flex items-center gap-2">
-                                    <Flower2 className="w-5 h-5" />
-                                    Darshana
-                                </span>
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className="p-2.5 hover:bg-ruby/10 rounded-full transition-colors"
-                                    aria-label="Close menu"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-
-                            {/* Nav items */}
-                            <nav className="flex flex-col gap-1">
-                                {MENU_ITEMS.map((item) => (
-                                    <Link
-                                        key={item.label}
-                                        href={item.href}
+                            {/* Inner div provides the solid opaque background */}
+                            <div
+                                className="h-full w-full p-6 flex flex-col border-l border-white/10 shadow-2xl"
+                                style={{ backgroundColor: '#0A1628' }}
+                            >
+                                {/* Header */}
+                                <div className="flex justify-between items-center mb-10">
+                                    <span className="font-serif text-xl font-bold text-ruby-light flex items-center gap-2">
+                                        <Flower2 className="w-5 h-5" />
+                                        Darshana
+                                    </span>
+                                    <button
                                         onClick={() => setIsOpen(false)}
-                                        className="flex items-center gap-4 p-3 rounded-xl hover:bg-ruby/10 text-foreground-muted hover:text-foreground transition-all group"
+                                        className="p-2.5 hover:bg-ruby/10 rounded-full transition-colors"
+                                        aria-label="Close menu"
                                     >
-                                        <item.icon className="w-5 h-5 text-ruby/60 group-hover:text-ruby-light shrink-0 transition-colors" />
-                                        <span className="font-medium text-base">{item.label}</span>
-                                    </Link>
-                                ))}
-                            </nav>
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
 
-                            {/* Footer */}
-                            <div className="mt-auto pt-8 border-t border-ruby/10 space-y-4">
-                                <a
-                                    href="mailto:support@darshana.app"
-                                    className="block w-full py-2 px-4 text-center rounded-lg bg-ruby/10 text-ruby-light font-medium hover:bg-ruby/20 transition-colors text-sm"
-                                >
-                                    Contact Us
-                                </a>
-                                <p className="text-xs text-foreground-muted/60 text-center">
-                                    Darshana v1.0 • Authentic Wisdom
-                                </p>
+                                {/* Nav items */}
+                                <nav className="flex flex-col gap-1">
+                                    {MENU_ITEMS.map((item) => (
+                                        <Link
+                                            key={item.label}
+                                            href={item.href}
+                                            onClick={() => setIsOpen(false)}
+                                            className="flex items-center gap-4 p-3 rounded-xl hover:bg-ruby/10 text-foreground-muted hover:text-foreground transition-all group"
+                                        >
+                                            <item.icon className="w-5 h-5 text-ruby/60 group-hover:text-ruby-light shrink-0 transition-colors" />
+                                            <span className="font-medium text-base">{item.label}</span>
+                                        </Link>
+                                    ))}
+                                </nav>
+
+                                {/* Footer */}
+                                <div className="mt-auto pt-8 border-t border-ruby/10 space-y-4">
+                                    <a
+                                        href="mailto:support@darshana.app"
+                                        className="block w-full py-2 px-4 text-center rounded-lg bg-ruby/10 text-ruby-light font-medium hover:bg-ruby/20 transition-colors text-sm"
+                                    >
+                                        Contact Us
+                                    </a>
+                                    <p className="text-xs text-foreground-muted/60 text-center">
+                                        Darshana v1.0 • Authentic Wisdom
+                                    </p>
+                                </div>
                             </div>
                         </motion.div>
                     </>
