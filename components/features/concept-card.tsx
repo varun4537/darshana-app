@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
     ArrowLeft,
@@ -56,11 +56,18 @@ export function ConceptCard({
     darshanaTitle,
     prevConcept,
     nextConcept,
-    enterFrom = "left",
+    enterFrom: enterFromProp = "left",
     sanitizedSynthesis,
     accentColor,
 }: ConceptCardProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    /* ── Determine entry direction from URL ?dir= param ──────────── */
+    // "left"  = navigated forward  → card enters from the RIGHT
+    // "right" = navigated backward → card enters from the LEFT
+    const dirParam = searchParams.get("dir");
+    const enterFrom = dirParam === "right" ? "right" : dirParam === "left" ? "left" : enterFromProp;
 
     /* ── Animation state ──────────────────────────────────────────── */
     type AnimState =

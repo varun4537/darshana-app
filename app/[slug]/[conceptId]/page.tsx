@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { darshanas } from "@/lib/data/content";
@@ -75,20 +76,22 @@ export default async function ConceptPage({
 
     return (
         <div className="min-h-screen font-sans bg-background pb-32 overflow-x-hidden">
-            <ConceptCard
-                detail={detail}
-                conceptId={conceptId}
-                conceptIndex={conceptIndex}
-                totalConcepts={darshana.concepts.length}
-                conceptLevel={conceptBasic.level}
-                darshanaSlug={slug}
-                darshanaTitle={darshana.title}
-                prevConcept={prevConcept ? { id: prevConcept.id, title: prevConcept.title } : null}
-                nextConcept={nextConcept ? { id: nextConcept.id, title: nextConcept.title } : null}
-                enterFrom={enterFrom}
-                sanitizedSynthesis={sanitizedSynthesis}
-                accentColor={accentColor}
-            />
+            <Suspense>
+                <ConceptCard
+                    detail={detail}
+                    conceptId={conceptId}
+                    conceptIndex={conceptIndex}
+                    totalConcepts={darshana.concepts.length}
+                    conceptLevel={conceptBasic.level}
+                    darshanaSlug={slug}
+                    darshanaTitle={darshana.title}
+                    prevConcept={prevConcept ? { id: prevConcept.id, title: prevConcept.title } : null}
+                    nextConcept={nextConcept ? { id: nextConcept.id, title: nextConcept.title } : null}
+                    enterFrom={enterFrom}
+                    sanitizedSynthesis={sanitizedSynthesis}
+                    accentColor={accentColor}
+                />
+            </Suspense>
         </div>
     );
 }
